@@ -189,7 +189,7 @@
                         <div class="input-item"><label>出生时辰</label><select id="hour"><option value="0">子时 23-01</option><option value="1">丑时 01-03</option><option value="2">寅时 03-05</option><option value="3">卯时 05-07</option><option value="4">辰时 07-09</option><option value="5">巳时 09-11</option><option value="6">午时 11-13</option><option value="7">未时 13-15</option><option value="8">申时 15-17</option><option value="9">酉时 17-19</option><option value="10">戌时 19-21</option><option value="11">亥时 21-23</option></select></div>
                         <div class="input-item"><label>性别</label><select id="gender"><option value="male">男</option><option value="female">女</option></select></div>
                     </div>
-                    <button class="btn-primary" onclick="calculateBazi()">🔮 开始分析</button>
+                    <button class="btn-primary" onclick="calculateBazi()">🔮 量化分析</button>
                     <button class="btn-secondary" onclick="clearAll()">清空重置</button>
                     <div class="bazi-section" id="baziSection">
                         <h3 style="font-size:0.85em;margin-bottom:10px;color:var(--text-secondary)">八字命盘</h3>
@@ -216,14 +216,21 @@
                         <select id="selectedYear" onchange="updateResult()"></select>
                     </div>
                     
-                    <!-- 仪表盘 -->
-                    <div class="gauge-area" id="gaugeArea"></div>
+                    <!-- 八字命盘（独立展示） -->
+                    <div class="bazi-result" id="baziResult" style="display:none; margin-bottom:20px;">
+                        <h3 style="font-size:0.9em;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;">🧮 八字命盘</h3>
+                        <div class="bazi-grid" id="baziResultGrid"></div>
+                    </div>
                     
                     <!-- K线图 -->
-                    <div class="chart-section">
-                        <div class="chart-title">📈 综合指数走势</div>
+                    <div class="chart-section" id="chartSection">
+                        <div class="chart-title">📈 人生K线图</div>
                         <div class="chart-container"><canvas id="fortuneChart"></canvas></div>
                     </div>
+                    
+                    <!-- 运势指数 -->
+                    <div class="section-title" id="indexTitle" style="font-size:0.9em;font-weight:700;margin-bottom:14px;margin-top:6px;display:flex;align-items:center;gap:6px;">📊 运势指数</div>
+                    <div class="gauge-area" id="gaugeArea"></div>
                     
                     <!-- 月度 -->
                     <div class="monthly-analysis" id="monthlyAnalysis">
@@ -323,6 +330,19 @@ function calculateBazi(){
     document.getElementById('monthGan').textContent=mp.gan;document.getElementById('monthZhi').textContent=mp.zhi;document.getElementById('monthElement').textContent=mp.element;
     document.getElementById('dayGan').textContent=dp.gan;document.getElementById('dayZhi').textContent=dp.zhi;document.getElementById('dayElement').textContent=dp.element;
     document.getElementById('hourGan').textContent=hp.gan;document.getElementById('hourZhi').textContent=hp.zhi;document.getElementById('hourElement').textContent=hp.element;
+    
+    // 填充右侧八字命盘
+    const brg=document.getElementById('baziResultGrid');
+    brg.innerHTML=`
+        <div class="bazi-pillar"><div class="pillar-title">年柱</div><div class="pillar-chars"><div class="pillar-char">${yp.gan}</div><div class="pillar-char">${yp.zhi}</div></div><div class="pillar-element">${yp.element}</div></div>
+        <div class="bazi-pillar"><div class="pillar-title">月柱</div><div class="pillar-chars"><div class="pillar-char">${mp.gan}</div><div class="pillar-char">${mp.zhi}</div></div><div class="pillar-element">${mp.element}</div></div>
+        <div class="bazi-pillar"><div class="pillar-title">日柱</div><div class="pillar-chars"><div class="pillar-char">${dp.gan}</div><div class="pillar-char">${dp.zhi}</div></div><div class="pillar-element">${dp.element}</div></div>
+        <div class="bazi-pillar"><div class="pillar-title">时柱</div><div class="pillar-chars"><div class="pillar-char">${hp.gan}</div><div class="pillar-char">${hp.zhi}</div></div><div class="pillar-element">${hp.element}</div></div>
+    `;
+    document.getElementById('baziResult').style.display='block';
+    document.getElementById('chartSection').style.display='block';
+    document.getElementById('indexTitle').style.display='flex';
+    
     document.getElementById('baziSection').classList.add('show');
     document.getElementById('resultSection').classList.add('show');
     initYearSelector(y);currentRange='year';updateResult();
@@ -494,6 +514,7 @@ function genAdvice(f,w,l,h,e,mkt){
 function clearAll(){
     document.getElementById('baziSection').classList.remove('show');
     document.getElementById('resultSection').classList.remove('show');
+    document.getElementById('baziResult').style.display='none';
     if(chart){chart.destroy();chart=null;}
     baziGlobal=null;monthlyDataGlobal=null;
 }
