@@ -174,7 +174,6 @@
             <div class="market-status">
                 <div class="status-item"><span class="status-label">当前指数</span><span class="status-value" id="currentIndex">--</span></div>
                 <div class="status-item"><span class="status-label">涨跌幅</span><span class="status-value" id="changePercent">--</span></div>
-                <div class="status-item"><span class="status-label">基准线</span><span class="status-value" style="color:var(--accent)">5.0</span></div>
             </div>
         </div>
         
@@ -386,7 +385,7 @@ function renderGauges(data){
         const level=v>6?'bullish':v<4?'bearish':'neutral',levelText=v>6?'强势':v<4?'弱势':'平稳';
         const C=2*Math.PI*42,offset=C*(1-pct),sc=v>5?item.color:(v<4?'#ef4444':'#f59e0b');
         const card=document.createElement('div');card.className='gauge-card';
-        card.innerHTML=`<div class="gauge-icon">${item.icon}</div><div class="gauge-label">${item.label}</div><div class="gauge-ring"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="42"/><circle class="fg" cx="50" cy="50" r="42" stroke="${sc}" stroke-dasharray="${C}" stroke-dashoffset="${offset}"/></svg><div class="gauge-number" style="color:${sc}">${v.toFixed(1)}</div></div><div class="gauge-change ${chg>=0?'up':'down'}">${chg>=0?'↑':'↓'} ${chg>=0?'+':''}${chg.toFixed(2)}</div><div class="gauge-baseline">基准: 5.0</div><div class="gauge-level level-${level}">${levelText}</div>`;
+        card.innerHTML=`<div class="gauge-icon">${item.icon}</div><div class="gauge-label">${item.label}</div><div class="gauge-ring"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="42"/><circle class="fg" cx="50" cy="50" r="42" stroke="${sc}" stroke-dasharray="${C}" stroke-dashoffset="${offset}"/></svg><div class="gauge-number" style="color:${sc}">${v.toFixed(1)}</div></div><div class="gauge-change ${chg>=0?'up':'down'}">${chg>=0?'↑':'↓'} ${chg>=0?'+':''}${chg.toFixed(2)}</div><div class="gauge-level level-${level}">${levelText}</div>`;
         area.appendChild(card);
     });
     
@@ -425,15 +424,6 @@ function drawChart(data){
                 pointHoverBackgroundColor:pointColors,
                 pointHoverBorderColor:'#fff',
                 pointHoverBorderWidth:2
-            },{
-                label:'基准线',
-                data:Array(data.labels.length).fill(5),
-                borderColor:'rgba(245,158,11,0.5)',
-                borderWidth:1.5,
-                borderDash:[6,4],
-                pointRadius:0,
-                pointHoverRadius:0,
-                fill:false
             }]
         },
         options:{
