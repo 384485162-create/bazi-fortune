@@ -36,6 +36,7 @@
             padding: 20px;
             line-height: 1.6;
             color: var(--text-primary);
+            -webkit-text-size-adjust: 100%;
         }
         
         .container {
@@ -523,23 +524,215 @@
             }
         }
         
-        @media (max-width: 640px) {
+        /* ============ 手机端全面优化 ============ */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
             .top-bar {
                 flex-direction: column;
-                gap: 15px;
+                gap: 12px;
+                padding: 12px 15px;
+                border-radius: 10px;
+            }
+            
+            .logo {
+                font-size: 1.2em;
             }
             
             .market-status {
                 width: 100%;
                 justify-content: space-between;
+                gap: 8px;
+            }
+            
+            .status-item {
+                padding: 6px 10px;
+                flex: 1;
+            }
+            
+            .status-label {
+                font-size: 0.65em;
+            }
+            
+            .status-value {
+                font-size: 1em;
+            }
+            
+            .card {
+                padding: 15px;
+                border-radius: 12px;
+            }
+            
+            .card-title {
+                font-size: 1em;
+                margin-bottom: 15px;
+                padding-bottom: 12px;
             }
             
             .input-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            
+            .input-item input,
+            .input-item select {
+                padding: 10px 10px;
+                font-size: 16px; /* 防止iOS缩放 */
+            }
+            
+            .btn-primary {
+                padding: 14px;
+                font-size: 16px;
+            }
+            
+            .bazi-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 6px;
+            }
+            
+            .pillar-char {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+            
+            .time-range-selector {
+                gap: 6px;
+            }
+            
+            .range-btn {
+                padding: 8px 14px;
+                font-size: 14px;
+                flex: 1;
+                text-align: center;
+            }
+            
+            .year-selector {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                padding: 10px;
+            }
+            
+            .year-selector select {
+                width: 100%;
+                font-size: 16px;
+                padding: 10px;
+            }
+            
+            .chart-container {
+                height: 280px;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            
+            .metric-card {
+                padding: 12px;
+                border-radius: 8px;
+            }
+            
+            .metric-label {
+                font-size: 0.7em;
+            }
+            
+            .metric-value {
+                font-size: 1.5em;
+            }
+            
+            .metric-change {
+                font-size: 0.8em;
+            }
+            
+            .baseline {
+                font-size: 0.65em;
+            }
+            
+            .month-cards {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            
+            .month-card {
+                padding: 10px;
+            }
+            
+            .month-name {
+                font-size: 0.85em;
+            }
+            
+            .month-advice {
+                font-size: 0.75em;
+            }
+            
+            .disclaimer {
+                padding: 10px;
+                font-size: 0.75em;
+            }
+        }
+        
+        @media (max-width: 420px) {
+            body {
+                padding: 8px;
+            }
+            
+            .top-bar {
+                padding: 10px 12px;
+            }
+            
+            .logo {
+                font-size: 1.1em;
+            }
+            
+            .card {
+                padding: 12px;
+                border-radius: 10px;
+            }
+            
+            .input-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            
+            .bazi-grid {
+                gap: 4px;
+            }
+            
+            .pillar-char {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+                border-radius: 5px;
+            }
+            
+            .pillar-element {
+                font-size: 0.6em;
+            }
+            
+            .chart-container {
+                height: 240px;
+            }
+            
+            .metric-card {
+                padding: 10px;
+            }
+            
+            .metric-value {
+                font-size: 1.3em;
             }
             
             .month-cards {
                 grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            
+            .range-btn {
+                padding: 7px 10px;
+                font-size: 13px;
             }
         }
     </style>
