@@ -3,510 +3,378 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>人生运势指数 - 八字命理量化分析</title>
+    <title>人生股票 · 命运交易所</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --primary: #3b82f6; --primary-dark: #1e3a8a;
-            --accent: #f59e0b; --love: #ec4899; --health: #10b981;
-            --bg-dark: #0f172a; --bg-card: #1e293b; --bg-card2: #253348;
-            --text-primary: #f1f5f9; --text-secondary: #94a3b8; --text-muted: #64748b;
-            --border: #334155; --up: #10b981; --down: #ef4444;
+            --up: #ef4444; --down: #10b981;
+            --gold: #f59e0b; --blue: #3b82f6;
+            --bg: #0b0b0f; --bg2: #111118; --bg3: #18181f;
+            --border: #222230; --text: #f0f0f0; --muted: #666;
         }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans SC', sans-serif;
-            background: var(--bg-dark); min-height: 100vh; padding: 16px;
-            line-height: 1.6; color: var(--text-primary); -webkit-text-size-adjust: 100%;
+            font-family: -apple-system, 'PingFang SC', sans-serif;
+            background: var(--bg); color: var(--text);
+            min-height: 100vh; padding: 20px;
         }
-        .container { max-width: 1600px; margin: 0 auto; }
-        
-        .top-bar {
-            background: var(--bg-card); border-radius: 12px; padding: 14px 18px;
-            margin-bottom: 16px; display: flex; justify-content: space-between;
-            align-items: center; border: 1px solid var(--border);
+        .wrap { max-width: 520px; margin: 0 auto; }
+
+        /* 输入 */
+        .input-section { text-align: center; padding: 48px 0 32px; }
+        .brand { font-size: 0.8em; letter-spacing: 0.2em; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; }
+        .headline { font-size: clamp(2.2em, 10vw, 3.5em); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 6px; }
+        .gradient-text { background: linear-gradient(135deg, var(--up), var(--gold)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .tagline { color: var(--muted); font-size: 1em; margin-bottom: 36px; }
+
+        .date-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap; }
+        .date-row input, .date-row select {
+            padding: 12px; border: 1px solid var(--border); border-radius: 10px;
+            font-size: 15px; background: var(--bg2); color: var(--text); text-align: center;
+            -webkit-text-size-adjust: 100%;
         }
-        .logo { font-size: 1.3em; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-        .market-status { display: flex; gap: 12px; align-items: center; }
-        .status-item { display: flex; flex-direction: column; align-items: center; padding: 5px 12px; border-radius: 8px; background: rgba(59,130,246,0.08); }
-        .status-label { font-size: 0.7em; color: var(--text-muted); }
-        .status-value { font-size: 1.1em; font-weight: 700; color: var(--up); }
-        .status-value.down { color: var(--down); }
-        
-        .main-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-        @media (min-width: 1100px) { .main-grid { grid-template-columns: 300px 1fr; } }
-        
-        .card { background: var(--bg-card); border-radius: 14px; border: 1px solid var(--border); padding: 20px; }
-        .card-title { font-size: 1em; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
-        .card-title .icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 15px; background: rgba(59,130,246,0.15); }
-        
-        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-        .input-item { display: flex; flex-direction: column; gap: 4px; }
-        .input-item label { font-size: 0.75em; font-weight: 600; color: var(--text-muted); }
-        .input-item input, .input-item select { padding: 9px 10px; border: 1px solid var(--border); border-radius: 7px; font-size: 16px; background: var(--bg-dark); color: var(--text-primary); }
-        .input-item input:focus, .input-item select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(59,130,246,0.15); }
-        
-        .btn-primary { width: 100%; padding: 12px; border: none; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; margin-bottom: 8px; }
-        .btn-primary:hover { opacity: 0.9; }
-        .btn-secondary { width: 100%; padding: 9px; border: 1px solid var(--border); border-radius: 7px; font-size: 13px; font-weight: 600; cursor: pointer; background: transparent; color: var(--text-secondary); }
-        
-        .bazi-section { display: none; }
-        .bazi-section.show { display: block; margin-top: 16px; }
-        .bazi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-        .bazi-pillar { text-align: center; background: rgba(59,130,246,0.08); border-radius: 8px; padding: 8px 4px; }
-        .pillar-title { font-size: 0.65em; color: var(--text-muted); margin-bottom: 4px; }
-        .pillar-chars { display: flex; flex-direction: column; gap: 4px; }
-        .pillar-char { width: 38px; height: 38px; background: var(--primary-dark); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 19px; font-weight: bold; color: white; margin: 0 auto; }
-        .pillar-element { font-size: 0.65em; color: var(--accent); margin-top: 2px; }
-        
-        .result-section { display: none; }
-        .result-section.show { display: block; }
-        
-        .time-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
-        .time-tab { flex: 1; padding: 8px 10px; border: 1px solid var(--border); border-radius: 7px; background: transparent; color: var(--text-secondary); font-size: 13px; font-weight: 600; cursor: pointer; text-align: center; }
-        .time-tab:hover { border-color: var(--primary); color: var(--primary); }
-        .time-tab.active { background: var(--primary); border-color: var(--primary); color: white; }
-        
-        .year-selector { display: none; margin-bottom: 12px; padding: 10px; background: rgba(59,130,246,0.05); border-radius: 8px; }
-        .year-selector.show { display: flex; align-items: center; gap: 10px; }
-        .year-selector label { font-weight: 600; color: var(--text-secondary); font-size: 0.85em; }
-        .year-selector select { flex: 1; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 16px; background: var(--bg-dark); color: var(--text-primary); }
-        
-        /* 仪表盘 */
-        .gauge-area { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .gauge-card { background: var(--bg-card2); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid var(--border); }
-        .gauge-icon { font-size: 1.5em; margin-bottom: 6px; }
-        .gauge-label { font-size: 0.75em; color: var(--text-muted); margin-bottom: 8px; }
-        .gauge-ring { position: relative; width: 100px; height: 100px; margin: 0 auto 8px; }
-        .gauge-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
-        .gauge-ring .bg { fill: none; stroke: var(--border); stroke-width: 8; }
-        .gauge-ring .fg { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s ease, stroke 0.3s; }
-        .gauge-number { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 1.6em; font-weight: 800; }
-        .gauge-change { font-size: 0.8em; font-weight: 600; margin-top: 2px; }
-        .gauge-change.up { color: var(--up); }
-        .gauge-change.down { color: var(--down); }
-        .gauge-baseline { font-size: 0.65em; color: var(--text-muted); margin-top: 2px; }
-        .gauge-level { display: inline-block; padding: 2px 10px; border-radius: 10px; font-size: 0.7em; font-weight: 700; margin-top: 4px; }
-        .level-bullish { background: rgba(16,185,129,0.2); color: var(--up); }
-        .level-bearish { background: rgba(239,68,68,0.2); color: var(--down); }
-        .level-neutral { background: rgba(245,158,11,0.2); color: var(--accent); }
-        
+        .date-row input:focus, .date-row select:focus { outline: none; border-color: var(--gold); }
+
+        .main-btn {
+            width: 100%; max-width: 300px; padding: 14px; background: linear-gradient(135deg, var(--up), #f97316);
+            border: none; border-radius: 12px; color: white; font-size: 16px; font-weight: 800;
+            cursor: pointer; letter-spacing: 0.05em;
+        }
+        .main-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* 结果 */
+        #result { display: none; }
+        #result.show { display: block; }
+
+        /* 股票行情 */
+        .quote-card {
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: 18px; padding: 22px 24px; margin-bottom: 14px;
+            position: relative; overflow: hidden;
+        }
+        .quote-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: linear-gradient(90deg, var(--up), var(--gold));
+        }
+
+        .quote-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+        .stock-info {}
+        .stock-n { font-size: 1.3em; font-weight: 900; }
+        .stock-c { font-size: 0.75em; color: var(--muted); font-family: 'Courier New', monospace; margin-top: 2px; }
+
+        .quote-tag {
+            padding: 4px 12px; border-radius: 20px; font-size: 0.72em; font-weight: 700;
+            background: rgba(239,68,68,0.15); color: var(--up);
+        }
+
+        .quote-main { display: flex; align-items: baseline; gap: 14px; margin-bottom: 8px; }
+        .price { font-size: clamp(2.8em, 12vw, 3.8em); font-weight: 900; line-height: 1; }
+        .price.up { color: var(--up); }
+        .price.down { color: var(--down); }
+        .price-unit { font-size: 0.75em; color: var(--muted); }
+
+        .change { font-size: 1.1em; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .change.up { color: var(--up); }
+        .change.down { color: var(--down); }
+        .chip {
+            font-size: 0.7em; padding: 2px 8px; border-radius: 6px; font-weight: 700;
+            background: rgba(239,68,68,0.15); color: var(--up);
+        }
+        .chip.down-chip { background: rgba(16,185,129,0.15); color: var(--down); }
+
         /* K线图 */
-        .chart-section { margin-bottom: 20px; }
-        .chart-title { font-size: 0.9em; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-        .chart-container { position: relative; height: 300px; }
-        
-        /* 月度卡片 */
-        .monthly-analysis { display: none; }
-        .monthly-analysis.show { display: block; margin-bottom: 20px; }
-        .monthly-analysis h3 { font-size: 0.9em; font-weight: 700; margin-bottom: 10px; }
-        .month-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-        .month-card { background: var(--bg-card2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; transition: border-color 0.2s; }
-        .month-card:hover { border-color: var(--primary); }
-        .month-card.bullish { border-left: 3px solid var(--up); }
-        .month-card.bearish { border-left: 3px solid var(--down); }
-        .month-card.neutral { border-left: 3px solid var(--accent); }
-        .month-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-        .month-name { font-weight: 700; font-size: 0.85em; }
-        .month-score { font-size: 0.8em; font-weight: 700; padding: 2px 8px; border-radius: 4px; }
-        .month-card.bullish .month-score { background: var(--up); color: white; }
-        .month-card.bearish .month-score { background: var(--down); color: white; }
-        .month-card.neutral .month-score { background: var(--accent); color: white; }
-        .month-trend { font-size: 0.7em; color: var(--text-muted); margin-bottom: 4px; }
-        .month-advice { font-size: 0.75em; color: var(--text-primary); line-height: 1.4; }
-        
-        /* 大运 */
-        .decade-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-        .decade-card { background: var(--bg-card2); border: 1px solid var(--border); border-radius: 8px; padding: 10px; text-align: center; }
-        .decade-card.current { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(59,130,246,0.2); }
-        .decade-period { font-size: 0.8em; font-weight: 700; margin-bottom: 6px; }
-        .decade-scores { display: flex; flex-direction: column; gap: 4px; }
-        .decade-score-row { display: flex; align-items: center; gap: 4px; font-size: 0.7em; }
-        .decade-score-icon { width: 14px; text-align: center; }
-        .decade-bar-bg { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
-        .decade-bar { height: 100%; border-radius: 3px; transition: width 0.8s ease; }
-        .decade-score-val { width: 24px; text-align: right; color: var(--text-muted); }
-        
-        /* 底部 */
-        .footer {
-            text-align: center; padding: 20px 0 10px; color: var(--text-muted);
-            font-size: 0.8em; border-top: 1px solid var(--border); margin-top: 20px;
+        .chart-box {
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: 18px; padding: 20px 20px 12px; margin-bottom: 14px;
         }
-        .footer a { color: var(--primary); text-decoration: none; }
-        .footer a:hover { text-decoration: underline; }
+        .chart-box canvas { width: 100% !important; }
+
+        /* 操作建议 */
+        .signal-box {
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: 18px; padding: 20px; text-align: center; margin-bottom: 14px;
+        }
+        .signal-label { font-size: 0.72em; color: var(--muted); margin-bottom: 8px; }
+        .signal-word { font-size: 2.2em; font-weight: 900; margin-bottom: 4px; }
+        .signal-word.buy { color: var(--down); }
+        .signal-word.sell { color: var(--up); }
+        .signal-word.hold { color: var(--gold); }
+        .signal-desc { font-size: 0.85em; color: var(--muted); }
+        .signal-reason {
+            margin-top: 10px; font-size: 0.8em; color: var(--text);
+            background: var(--bg3); border-radius: 8px; padding: 10px; line-height: 1.6;
+        }
+
+        /* 分享 */
+        .share-box {
+            background: var(--bg2); border: 1px solid var(--border);
+            border-radius: 18px; padding: 20px; margin-bottom: 14px;
+        }
+        .share-title { font-size: 0.8em; color: var(--muted); margin-bottom: 10px; }
+        .share-text {
+            background: var(--bg3); border-radius: 10px; padding: 12px;
+            font-size: 0.82em; line-height: 1.6; color: var(--text);
+            border-left: 3px solid var(--gold); margin-bottom: 12px;
+            word-break: break-all;
+        }
+        .share-btn {
+            width: 100%; padding: 12px; background: var(--bg3);
+            border: 1px solid var(--border); border-radius: 10px;
+            color: var(--text); font-size: 14px; font-weight: 700;
+            cursor: pointer;
+        }
+        .share-btn:hover { border-color: var(--text); }
+
+        .back-btn {
+            display: block; width: 100%; padding: 12px; background: transparent;
+            border: 1px solid var(--border); border-radius: 10px;
+            color: var(--muted); font-size: 14px; cursor: pointer;
+        }
+        .back-btn:hover { border-color: var(--text); color: var(--text); }
+
         .disclaimer {
-            background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);
-            border-radius: 8px; padding: 10px; font-size: 0.75em; color: var(--accent); text-align: center;
-        }
-        
-        /* 响应式 */
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            .top-bar { flex-direction: column; gap: 10px; padding: 12px 14px; }
-            .logo { font-size: 1.15em; }
-            .market-status { width: 100%; justify-content: space-between; }
-            .status-item { flex: 1; }
-            .card { padding: 14px; }
-            .gauge-area { gap: 10px; }
-            .gauge-card { padding: 12px; }
-            .gauge-ring { width: 80px; height: 80px; }
-            .gauge-number { font-size: 1.3em; }
-            .chart-container { height: 220px; }
-            .month-cards { grid-template-columns: repeat(2, 1fr); }
-            .decade-cards { grid-template-columns: repeat(2, 1fr); }
-        }
-        @media (max-width: 420px) {
-            body { padding: 8px; }
-            .card { padding: 12px; border-radius: 10px; }
-            .pillar-char { width: 32px; height: 32px; font-size: 16px; }
-            .gauge-ring { width: 72px; height: 72px; }
-            .gauge-number { font-size: 1.15em; }
-            .chart-container { height: 200px; }
-            .month-cards { grid-template-columns: 1fr 1fr; gap: 6px; }
-            .decade-cards { grid-template-columns: 1fr 1fr; }
+            text-align: center; padding: 16px 0; color: #333; font-size: 0.72em;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="top-bar">
-            <div class="logo"><span>🔮</span><span>人生运势指数</span></div>
-            <div class="market-status">
-                <div class="status-item"><span class="status-label">当前指数</span><span class="status-value" id="currentIndex">--</span></div>
-                <div class="status-item"><span class="status-label">涨跌幅</span><span class="status-value" id="changePercent">--</span></div>
+<div class="wrap">
+
+    <!-- 输入 -->
+    <div id="inputSection">
+        <div class="input-section">
+            <div class="brand">MKT · 命运交易所</div>
+            <div class="headline">人生<span class="gradient-text">股票</span></div>
+            <div class="tagline">你的命运，今日开盘</div>
+
+            <div class="date-row">
+                <input type="number" id="fYear" value="1995" min="1900" max="2025" placeholder="年">
+                <select id="fMonth">
+                    <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option>
+                    <option value="4">4月</option><option value="5">5月</option><option value="6">6月</option>
+                    <option value="7">7月</option><option value="8">8月</option><option value="9">9月</option>
+                    <option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
+                </select>
+                <input type="number" id="fDay" value="1" min="1" max="31" placeholder="日">
+                <select id="fHour">
+                    <option value="0">子时</option><option value="1">丑时</option><option value="2">寅时</option>
+                    <option value="3">卯时</option><option value="4">辰时</option><option value="5">巳时</option>
+                    <option value="6">午时</option><option value="7">未时</option><option value="8">申时</option>
+                    <option value="9">酉时</option><option value="10">戌时</option><option value="11">亥时</option>
+                </select>
             </div>
-        </div>
-        
-        <div class="main-grid">
-            <div class="left-column">
-                <div class="card">
-                    <h2 class="card-title"><span class="icon">📊</span>量化参数</h2>
-                    <div class="input-grid">
-                        <div class="input-item"><label>出生年份</label><input type="number" id="year" value="1990" min="1900" max="2100"></div>
-                        <div class="input-item"><label>出生月份</label><select id="month"><option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option></select></div>
-                        <div class="input-item"><label>出生日期</label><input type="number" id="day" value="15" min="1" max="31"></div>
-                        <div class="input-item"><label>出生时辰</label><select id="hour"><option value="0">子时 23-01</option><option value="1">丑时 01-03</option><option value="2">寅时 03-05</option><option value="3">卯时 05-07</option><option value="4">辰时 07-09</option><option value="5">巳时 09-11</option><option value="6">午时 11-13</option><option value="7">未时 13-15</option><option value="8">申时 15-17</option><option value="9">酉时 17-19</option><option value="10">戌时 19-21</option><option value="11">亥时 21-23</option></select></div>
-                        <div class="input-item"><label>性别</label><select id="gender"><option value="male">男</option><option value="female">女</option></select></div>
-                    </div>
-                    <button class="btn-primary" onclick="calculateBazi()">🔮 量化分析</button>
-                    <button class="btn-secondary" onclick="clearAll()">清空重置</button>
-                    <div class="bazi-section" id="baziSection">
-                        <h3 style="font-size:0.85em;margin-bottom:10px;color:var(--text-secondary)">八字命盘</h3>
-                        <div class="bazi-grid">
-                            <div class="bazi-pillar"><div class="pillar-title">年柱</div><div class="pillar-chars"><div class="pillar-char" id="yearGan">甲</div><div class="pillar-char" id="yearZhi">子</div></div><div class="pillar-element" id="yearElement">木水</div></div>
-                            <div class="bazi-pillar"><div class="pillar-title">月柱</div><div class="pillar-chars"><div class="pillar-char" id="monthGan">乙</div><div class="pillar-char" id="monthZhi">丑</div></div><div class="pillar-element" id="monthElement">木土</div></div>
-                            <div class="bazi-pillar"><div class="pillar-title">日柱</div><div class="pillar-chars"><div class="pillar-char" id="dayGan">丙</div><div class="pillar-char" id="dayZhi">寅</div></div><div class="pillar-element" id="dayElement">火木</div></div>
-                            <div class="bazi-pillar"><div class="pillar-title">时柱</div><div class="pillar-chars"><div class="pillar-char" id="hourGan">丁</div><div class="pillar-char" id="hourZhi">卯</div></div><div class="pillar-element" id="hourElement">火木</div></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="right-column">
-                <div class="card result-section" id="resultSection">
-                    <h2 class="card-title"><span class="icon">📈</span>运势指数</h2>
-                    <div class="time-tabs">
-                        <button class="time-tab active" onclick="changeTimeRange('year')">年度</button>
-                        <button class="time-tab" onclick="changeTimeRange('month')">月度</button>
-                        <button class="time-tab" onclick="changeTimeRange('decade')">大运</button>
-                    </div>
-                    <div class="year-selector" id="yearSelector">
-                        <label>选择年份：</label>
-                        <select id="selectedYear" onchange="updateResult()"></select>
-                    </div>
-                    
-                    <!-- 八字命盘（独立展示） -->
-                    <div class="bazi-result" id="baziResult" style="display:none; margin-bottom:20px;">
-                        <h3 style="font-size:0.9em;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px;">🧮 八字命盘</h3>
-                        <div class="bazi-grid" id="baziResultGrid"></div>
-                    </div>
-                    
-                    <!-- K线图 -->
-                    <div class="chart-section" id="chartSection">
-                        <div class="chart-title">📈 人生K线图</div>
-                        <div class="chart-container"><canvas id="fortuneChart"></canvas></div>
-                    </div>
-                    
-                    <!-- 运势指数 -->
-                    <div class="section-title" id="indexTitle" style="font-size:0.9em;font-weight:700;margin-bottom:14px;margin-top:6px;display:flex;align-items:center;gap:6px;">📊 运势指数</div>
-                    <div class="gauge-area" id="gaugeArea"></div>
-                    
-                    <!-- 月度 -->
-                    <div class="monthly-analysis" id="monthlyAnalysis">
-                        <h3>📊 月度分析</h3>
-                        <div class="month-cards" id="monthCards"></div>
-                    </div>
-                    
-                    <!-- 大运 -->
-                    <div class="monthly-analysis" id="decadeAnalysis">
-                        <h3>🔄 大运周期</h3>
-                        <div class="decade-cards" id="decadeCards"></div>
-                    </div>
-                    
-                    <div class="disclaimer">⚠️ 本系统基于传统命理学算法，仅供娱乐参考，不构成任何建议。人生充满不确定性，请理性看待。</div>
-                </div>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p>交流反馈：<a href="mailto:384485162@qq.com">384485162@qq.com</a></p>
+            <button class="main-btn" onclick="openMarket()">⚡ 开盘查价</button>
         </div>
     </div>
+
+    <!-- 结果 -->
+    <div id="result">
+        <div class="quote-card">
+            <div class="quote-top">
+                <div class="stock-info">
+                    <div class="stock-n" id="stockName">—</div>
+                    <div class="stock-c" id="stockCode">——— · MKT</div>
+                </div>
+                <span class="quote-tag" id="stockTag">—</span>
+            </div>
+            <div class="quote-main">
+                <div class="price" id="stockPrice">—</div>
+                <div style="display:flex;flex-direction:column;gap:4px">
+                    <div class="change" id="stockChange">—</div>
+                    <div class="change" id="stockChangePct" style="font-size:0.9em">—</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-box">
+            <canvas id="kline" height="200"></canvas>
+        </div>
+
+        <div class="signal-box">
+            <div class="signal-label">📊 <span id="signalDate"></span> 操作建议</div>
+            <div class="signal-word" id="signalWord">—</div>
+            <div class="signal-desc" id="signalDesc">—</div>
+            <div class="signal-reason" id="signalReason">—</div>
+        </div>
+
+        <div class="share-box">
+            <div class="share-title">🔗 分享你的股票代码</div>
+            <div class="share-text" id="shareText">—</div>
+            <button class="share-btn" onclick="copyShare()">📋 复制分享</button>
+        </div>
+
+        <button class="back-btn" onclick="reset()">↩ 重新查询</button>
+
+        <div class="disclaimer">市场有风险，投资需谨慎。本系统仅供娱乐，不构成任何建议。</div>
+    </div>
+</div>
 
 <script>
 const tianGan=['甲','乙','丙','丁','戊','己','庚','辛','壬','癸'];
 const diZhi=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥'];
 const ganWuxing={'甲':'木','乙':'木','丙':'火','丁':'火','戊':'土','己':'土','庚':'金','辛':'金','壬':'水','癸':'水'};
 const zhiWuxing={'子':'水','丑':'土','寅':'木','卯':'木','辰':'土','巳':'火','午':'火','未':'土','申':'金','酉':'金','戌':'土','亥':'水'};
-const monthNames=['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+const months=['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+const stockAdj=['天命','星途','鸿运','青云','龙腾','锦绣','祥云','鹏程','瑞泽','金榜'];
+const stockNoun=['A','01','88','66','99','18','08','36'];
 
-let chart=null, currentRange='year', birthYearGlobal=1990, baziGlobal=null, genderGlobal='male', monthlyDataGlobal=null;
+let chart=null, bd=null, sd=null;
 
-function getYearPillar(y){const g=(y-4)%10,z=(y-4)%12;return{gan:tianGan[g>=0?g:g+10],zhi:diZhi[z>=0?z:z+12],element:ganWuxing[tianGan[g>=0?g:g+10]]+zhiWuxing[diZhi[z>=0?z:z+12]]};}
-function getMonthPillar(y,m){const yg=(y-4)%10,gs=(yg%5)*2,gi=(gs+m-1)%10,zi=(m+1)%12;return{gan:tianGan[gi],zhi:diZhi[zi],element:ganWuxing[tianGan[gi]]+zhiWuxing[diZhi[zi]]};}
-function getDayPillar(y,m,d){const base=new Date(1900,0,31),tgt=new Date(y,m-1,d),diff=Math.floor((tgt-base)/864e5),gi=diff%10,zi=diff%12;return{gan:tianGan[gi>=0?gi:gi+10],zhi:diZhi[zi>=0?zi:zi+12],element:ganWuxing[tianGan[gi>=0?gi:gi+10]]+zhiWuxing[diZhi[zi>=0?zi:zi+12]]};}
-function getHourPillar(dg,h){const di=tianGan.indexOf(dg),gs=(di%5)*2,gi=(gs+h)%10;return{gan:tianGan[gi],zhi:diZhi[h],element:ganWuxing[tianGan[gi]]+zhiWuxing[diZhi[h]]};}
+function gY(y){const g=(y-4)%10,z=(y-4)%12;return{gan:tianGan[g<0?g+10:g],zhi:diZhi[z<0?z+12:z]};}
+function gM(y,m){const g=(y-4)%10,gs=(g%5)*2,gi=(gs+m-1)%10;return{gan:tianGan[gi],zhi:diZhi[m%12]};}
+function gD(y,m,d){const base=new Date(1900,0,31),tgt=new Date(y,m-1,d),diff=Math.floor((tgt-base)/864e5);const gi=diff%10,zi=diff%12;return{gan:tianGan[gi<0?gi+10:gi],zhi:diZhi[zi<0?zi+12:zi]};}
+function gH(dg,h){return{gan:tianGan[(tianGan.indexOf(dg)+h)%10],zhi:diZhi[h]};}
 
-function calcScores(b){return{gan:(b.year.gan.charCodeAt(0)+b.month.gan.charCodeAt(0)+b.day.gan.charCodeAt(0)+b.hour.gan.charCodeAt(0))%50,zhi:(b.year.zhi.charCodeAt(0)+b.month.zhi.charCodeAt(0)+b.day.zhi.charCodeAt(0)+b.hour.zhi.charCodeAt(0))%50};}
+function makeCode(bazi){
+    const s=bazi.year.gan+bazi.year.zhi+bazi.day.gan+bazi.day.zhi;
+    return (Math.abs(s.split('').map(c=>c.charCodeAt(0)).reduce((a,b)=>a+b,0))%900000+100000).toString();
+}
+function makeName(bazi){
+    const all=[...stockAdj,bazi.day.gan+bazi.day.zhi];
+    return all[Math.abs((bazi.day.gan.charCodeAt(0)+bazi.day.zhi.charCodeAt(0))%all.length)];
+}
+function score(bazi){
+    return (bazi.year.gan.charCodeAt(0)+bazi.month.gan.charCodeAt(0)+bazi.day.gan.charCodeAt(0)+bazi.hour.gan.charCodeAt(0))%50;
+}
 
-function genYearly(bazi){
-    const s=calcScores(bazi),ages=[],f=[],w=[],l=[],h=[];
+function gen80(bazi){
+    const s=score(bazi),ls=[],da=[];
     for(let a=1;a<=80;a++){
-        ages.push(a+'岁');
-        const d=Math.sin((a-1)*Math.PI/10)*2.5,n=Math.sin((a-1)*Math.PI/6)*1.5,x=Math.sin((a-s.gan%20)*Math.PI/5);
-        f.push(+(Math.max(1.5,Math.min(9.5,5+(s.gan+s.zhi)/40+d+n+x+(Math.random()-0.5)*1)).toFixed(1)));
-        w.push(+(Math.max(1.5,Math.min(9.5,5+(s.gan%30)/10+Math.sin((a-15)*Math.PI/15)*2.8+(Math.random()-0.5)*1.2)).toFixed(1)));
-        l.push(+(Math.max(1.5,Math.min(9.5,5+(s.zhi%35)/10+Math.sin((a-20)*Math.PI/8)*2.5+(Math.random()-0.5)*1)).toFixed(1)));
-        h.push(+(Math.max(1.5,Math.min(9.5,5+(s.gan%25)/10+Math.sin((a-30)*Math.PI/12)*2+(Math.random()-0.5)*0.8)).toFixed(1)));
+        ls.push(a+'岁');
+        const d=Math.sin((a-1)*Math.PI/10)*2.5,n=Math.sin((a-1)*Math.PI/6)*1.5;
+        da.push(+(Math.max(1.5,Math.min(9.5,5+s/40+d+n+Math.sin((a-s%20)*Math.PI/5)+((Math.random()||Math.sin(a))-0.5)*0.6)).toFixed(2)));
     }
-    return{labels:ages,fortunes:f,wealth:w,love:l,health:h,xLabel:'年龄'};
+    return{labels:ls,data:da};
 }
 
-function genMonthly(year,bazi){
-    const s=calcScores(bazi),months=[],f=[],w=[],l=[],h=[],elems=[];
-    const dge=ganWuxing[bazi.day.gan];
-    for(let m=1;m<=12;m++){
-        months.push(monthNames[m-1]);
-        const mzi=(m+1)%12,mz=diZhi[mzi],me=zhiWuxing[mz];elems.push(me);
-        let eb=0;
-        if((dge==='木'&&me==='水')||(dge==='火'&&me==='木')||(dge==='土'&&me==='火')||(dge==='金'&&me==='土')||(dge==='水'&&me==='金'))eb=0.8;
-        else if(dge===me)eb=0.6;
-        else if((dge==='木'&&me==='土')||(dge==='火'&&me==='金')||(dge==='土'&&me==='水')||(dge==='金'&&me==='木')||(dge==='水'&&me==='火'))eb=-0.3;
-        else eb=-0.5;
-        const sb=Math.sin((m-bazi.birthMonth)*Math.PI/6)*0.8;
-        f.push(+(Math.max(1.5,Math.min(9.5,5+(s.gan+s.zhi)/40+eb+sb+Math.sin(m*Math.PI/3)*1.2+(Math.random()-0.5)*0.8)).toFixed(1)));
-        w.push(+(Math.max(1.5,Math.min(9.5,5+(s.gan%30)/10+(me==='金'||me==='水'?0.8:0)+Math.sin(m*Math.PI/4)*1.5+(Math.random()-0.5)*1)).toFixed(1)));
-        l.push(+(Math.max(1.5,Math.min(9.5,5+(s.zhi%35)/10+(me==='火'||me==='木'?0.6:0)+Math.sin((m+2)*Math.PI/5)*1.3+(Math.random()-0.5)*1)).toFixed(1)));
-        h.push(+(Math.max(1.5,Math.min(9.5,5+(s.gan%25)/10+(me==='土'?0.5:0)+Math.sin((m+4)*Math.PI/6)*1.2+(Math.random()-0.5)*0.8)).toFixed(1)));
-    }
-    return{labels:months,fortunes:f,wealth:w,love:l,health:h,year,monthElements:elems,xLabel:'月份'};
+function openMarket(){
+    const y=+fYear.value,m=+fMonth.value,d=+fDay.value,h=+fHour.value;
+    if(d>new Date(y,m,0).getDate()){alert('日期不合法');return;}
+    bd={year:gY(y),month:gM(y,m),day:gD(y,m,d),hour:gH(gD(y,m,d).gan,h),y,m};
+    sd={code:makeCode(bd),name:makeName(bd)};
+
+    inputSection.style.display='none';
+    result.classList.add('show');
+    document.title=sd.name+'('+sd.code+') · 人生股票';
+
+    render();
 }
 
-function genDecade(bazi){
-    const s=calcScores(bazi),periods=[],f=[],w=[],l=[],h=[];
-    const dge=ganWuxing[bazi.day.gan];
-    for(let i=0;i<8;i++){
-        periods.push((1+i*10)+'-'+(10+i*10)+'岁');
-        const dgi=(s.gan+i)%10,dg=tianGan[dgi],de=ganWuxing[dg];
-        let eb=0;
-        if((dge==='木'&&de==='水')||(dge==='火'&&de==='木')||(dge==='土'&&de==='火')||(dge==='金'&&de==='土')||(dge==='水'&&de==='金'))eb=1.2;
-        else if(dge===de)eb=0.8;
-        f.push(+(Math.max(1.5,Math.min(9.5,5+(s.gan+s.zhi)/40+eb+Math.sin(i*Math.PI/3)*2+(Math.random()-0.5)*0.8)).toFixed(1)));
-        w.push(+(Math.max(1.5,Math.min(9.5,5+(s.gan%30)/10+Math.sin(i*Math.PI/2.5)*1.8+(Math.random()-0.5)*0.6)).toFixed(1)));
-        l.push(+(Math.max(1.5,Math.min(9.5,5+(s.zhi%35)/10+Math.sin((i+1)*Math.PI/3)*2+(Math.random()-0.5)*0.7)).toFixed(1)));
-        h.push(+(Math.max(1.5,Math.min(9.5,5+(s.gan%25)/10+Math.sin(i*Math.PI/4)*1.5+(Math.random()-0.5)*0.6)).toFixed(1)));
-    }
-    return{labels:periods,fortunes:f,wealth:w,love:l,health:h,periodStarts:[1,11,21,31,41,51,61,71],xLabel:'大运周期'};
-}
+function render(){
+    const y=new Date().getFullYear(),curAge=y-bd.y;
+    const d80=gen80(bd);
+    const idx=Math.min(Math.max(0,curAge-1),79);
+    const v=d80.data[idx];
+    const pv=d80.data[Math.max(0,idx-1)];
+    const chg=v-pv,pct=(chg/pv*100).toFixed(1);
+    const up=v>=5;
 
-function calculateBazi(){
-    const y=+document.getElementById('year').value,m=+document.getElementById('month').value,d=+document.getElementById('day').value,h=+document.getElementById('hour').value,g=document.getElementById('gender').value;
-    if(d>new Date(y,m,0).getDate()){alert('该月份没有这个日期');return;}
-    const yp=getYearPillar(y),mp=getMonthPillar(y,m),dp=getDayPillar(y,m,d),hp=getHourPillar(dp.gan,h);
-    const bazi={year:yp,month:mp,day:dp,hour:hp,birthMonth:m};
-    birthYearGlobal=y;baziGlobal=bazi;genderGlobal=g;
-    document.getElementById('yearGan').textContent=yp.gan;document.getElementById('yearZhi').textContent=yp.zhi;document.getElementById('yearElement').textContent=yp.element;
-    document.getElementById('monthGan').textContent=mp.gan;document.getElementById('monthZhi').textContent=mp.zhi;document.getElementById('monthElement').textContent=mp.element;
-    document.getElementById('dayGan').textContent=dp.gan;document.getElementById('dayZhi').textContent=dp.zhi;document.getElementById('dayElement').textContent=dp.element;
-    document.getElementById('hourGan').textContent=hp.gan;document.getElementById('hourZhi').textContent=hp.zhi;document.getElementById('hourElement').textContent=hp.element;
-    
-    // 填充右侧八字命盘
-    const brg=document.getElementById('baziResultGrid');
-    brg.innerHTML=`
-        <div class="bazi-pillar"><div class="pillar-title">年柱</div><div class="pillar-chars"><div class="pillar-char">${yp.gan}</div><div class="pillar-char">${yp.zhi}</div></div><div class="pillar-element">${yp.element}</div></div>
-        <div class="bazi-pillar"><div class="pillar-title">月柱</div><div class="pillar-chars"><div class="pillar-char">${mp.gan}</div><div class="pillar-char">${mp.zhi}</div></div><div class="pillar-element">${mp.element}</div></div>
-        <div class="bazi-pillar"><div class="pillar-title">日柱</div><div class="pillar-chars"><div class="pillar-char">${dp.gan}</div><div class="pillar-char">${dp.zhi}</div></div><div class="pillar-element">${dp.element}</div></div>
-        <div class="bazi-pillar"><div class="pillar-title">时柱</div><div class="pillar-chars"><div class="pillar-char">${hp.gan}</div><div class="pillar-char">${hp.zhi}</div></div><div class="pillar-element">${hp.element}</div></div>
-    `;
-    document.getElementById('baziResult').style.display='block';
-    document.getElementById('chartSection').style.display='block';
-    document.getElementById('indexTitle').style.display='flex';
-    
-    document.getElementById('baziSection').classList.add('show');
-    document.getElementById('resultSection').classList.add('show');
-    initYearSelector(y);currentRange='year';updateResult();
-}
+    stockName.textContent=sd.name;
+    stockCode.textContent=sd.code+' · MKT';
 
-function initYearSelector(by){const sel=document.getElementById('selectedYear'),cy=new Date().getFullYear();sel.innerHTML='';for(let y=by;y<=by+80;y++){const o=document.createElement('option');o.value=y;o.textContent=y+'年 ('+(y-by)+'岁)';if(y===cy)o.selected=true;sel.appendChild(o);}}
+    stockPrice.textContent=v.toFixed(2);
+    stockPrice.className='price '+(up?'up':'down');
 
-function changeTimeRange(r){
-    currentRange=r;
-    document.querySelectorAll('.time-tab').forEach(b=>b.classList.remove('active'));
-    event.target.classList.add('active');
-    document.getElementById('yearSelector').className='year-selector'+(r==='month'?' show':'');
-    updateResult();
-}
+    stockChange.textContent=(chg>=0?'▲ ':'▼ ')+Math.abs(chg).toFixed(2);
+    stockChange.className='change '+(chg>=0?'up':'down');
+    stockChangePct.textContent=(chg>=0?'+':'−')+pct+'%';
+    stockChangePct.className='change '+(chg>=0?'up':'down');
 
-function updateResult(){
-    if(!baziGlobal)return;
-    let data;
-    if(currentRange==='year')data=genYearly(baziGlobal);
-    else if(currentRange==='month'){data=genMonthly(+document.getElementById('selectedYear').value,baziGlobal);monthlyDataGlobal=data;}
-    else data=genDecade(baziGlobal);
-    renderGauges(data);drawChart(data);renderMonthly(data);renderDecade(data);
-}
+    stockTag.textContent=v>=7?'🔥 热门':v>=5.5?'📈 强势':v>=4.5?'➡ 平稳':v>=3.5?'📉 偏弱':'❄️ 低靡';
 
-function renderGauges(data){
-    const cy=new Date().getFullYear(),cm=new Date().getMonth()+1,ca=cy-birthYearGlobal;
-    let idx=ca-1,prevIdx=ca-2;
-    if(currentRange==='month'){idx=cm-1;prevIdx=cm>1?cm-2:0;}
-    else if(currentRange==='decade'){idx=Math.floor((ca-1)/10);prevIdx=idx>0?idx-1:0;}
-    
-    const items=[
-        {icon:'📊',label:'综合指数',key:'fortunes',color:'#3b82f6'},
-        {icon:'💰',label:'财运指数',key:'wealth',color:'#f59e0b'},
-        {icon:'💕',label:'情感指数',key:'love',color:'#ec4899'},
-        {icon:'💚',label:'健康指数',key:'health',color:'#10b981'}
-    ];
-    
-    const area=document.getElementById('gaugeArea');area.innerHTML='';
-    items.forEach(item=>{
-        const vals=data[item.key],v=vals[Math.min(idx,vals.length-1)],pv=vals[Math.min(prevIdx,vals.length-1)],chg=v-pv,pct=v/10;
-        const level=v>6?'bullish':v<4?'bearish':'neutral',levelText=v>6?'强势':v<4?'弱势':'平稳';
-        const C=2*Math.PI*42,offset=C*(1-pct),sc=v>5?item.color:(v<4?'#ef4444':'#f59e0b');
-        const card=document.createElement('div');card.className='gauge-card';
-        card.innerHTML=`<div class="gauge-icon">${item.icon}</div><div class="gauge-label">${item.label}</div><div class="gauge-ring"><svg viewBox="0 0 100 100"><circle class="bg" cx="50" cy="50" r="42"/><circle class="fg" cx="50" cy="50" r="42" stroke="${sc}" stroke-dasharray="${C}" stroke-dashoffset="${offset}"/></svg><div class="gauge-number" style="color:${sc}">${v.toFixed(1)}</div></div><div class="gauge-change ${chg>=0?'up':'down'}">${chg>=0?'↑':'↓'} ${chg>=0?'+':''}${chg.toFixed(2)}</div><div class="gauge-level level-${level}">${levelText}</div>`;
-        area.appendChild(card);
-    });
-    
-    const fv=data.fortunes[Math.min(idx,data.fortunes.length-1)],pfv=data.fortunes[Math.min(prevIdx,data.fortunes.length-1)],ch=fv-pfv;
-    document.getElementById('currentIndex').textContent=fv.toFixed(1)+' 点';
-    const ce=document.getElementById('changePercent');ce.textContent=(ch>=0?'+':'')+((ch/pfv)*100).toFixed(1)+'%';ce.className='status-value'+(ch<0?' down':'');
-}
-
-function drawChart(data){
-    const ctx=document.getElementById('fortuneChart').getContext('2d');
+    // K线
+    const ctx=kline.getContext('2d');
     if(chart)chart.destroy();
-    
-    // 根据值生成渐变色
-    const ctx2=document.getElementById('fortuneChart').getContext('2d');
-    const gradient=ctx2.createLinearGradient(0,0,0,300);
-    gradient.addColorStop(0,'rgba(59,130,246,0.25)');
-    gradient.addColorStop(1,'rgba(59,130,246,0)');
-    
-    // 根据每个点的值设置颜色
-    const pointColors=data.fortunes.map(v=>v>6?'#10b981':v<4?'#ef4444':'#3b82f6');
-    
+    const baseLine=Array(80).fill(5);
     chart=new Chart(ctx,{
         type:'line',
         data:{
-            labels:data.labels,
+            labels:d80.labels,
             datasets:[{
-                label:'综合指数',
-                data:data.fortunes,
-                borderColor:'#3b82f6',
-                backgroundColor:gradient,
-                borderWidth:2.5,
-                fill:true,
-                tension:0.4,
+                data:d80.data,
+                borderColor:function(c){
+                    return c.parsed.y>=5?'#ef4444':'#10b981';
+                },
+                backgroundColor:function(c){
+                    const ca=c.chart.chartArea;if(!ca)return'transparent';
+                    const gr=c.chart.ctx.createLinearGradient(0,ca.top,0,ca.bottom);
+                    const yv=c.parsed.y;
+                    if(yv>=5){gr.addColorStop(0,'rgba(239,68,68,0.2)');gr.addColorStop(1,'rgba(239,68,68,0)');}
+                    else{gr.addColorStop(0,'rgba(16,185,129,0.2)');gr.addColorStop(1,'rgba(16,185,129,0)');}
+                    return gr;
+                },
+                borderWidth:2.5,fill:true,tension:0.4,
                 pointRadius:0,
                 pointHoverRadius:6,
-                pointHoverBackgroundColor:pointColors,
-                pointHoverBorderColor:'#fff',
-                pointHoverBorderWidth:2
+                pointHoverBackgroundColor:function(c){return c.parsed.y>=5?'#ef4444':'#10b981';},
+                pointHoverBorderColor:'#fff',pointHoverBorderWidth:2
+            },{
+                data:baseLine,
+                borderColor:'rgba(245,158,11,0.35)',
+                borderWidth:1.5,borderDash:[6,4],
+                pointRadius:0,fill:false,tension:0
             }]
         },
         options:{
-            responsive:true,
-            maintainAspectRatio:false,
+            responsive:true,maintainAspectRatio:false,
             interaction:{intersect:false,mode:'index'},
             plugins:{
                 legend:{display:false},
                 tooltip:{
-                    backgroundColor:'rgba(15,23,42,0.95)',padding:12,
-                    titleFont:{size:14,weight:'600'},bodyFont:{size:12},
-                    titleColor:'#f1f5f9',bodyColor:'#cbd5e1',
-                    borderColor:'#334155',borderWidth:1,cornerRadius:8,
-                    filter:function(item){return item.dataset.label==='综合指数';},
-                    callbacks:{label:function(c){return ' 综合指数: '+c.parsed.y+' 点';}}
-                }
+                    backgroundColor:'rgba(11,11,15,0.95)',padding:12,
+                    titleFont:{size:12,weight:'600'},bodyFont:{size:12},
+                    titleColor:'#f0f0f0',bodyColor:'#888',
+                    borderColor:'rgba(34,34,48,0.8)',borderWidth:1,cornerRadius:8,
+                    callbacks:{
+                        label:function(c){
+                            if(c.datasetIndex===1)return null;
+                            const yv=c.parsed.y,tag=yv>=5?'📈':'📉';
+                            return tag+' '+yv.toFixed(2)+' 元/运';
+                        }
+                    }
+                },
+                annotation:undefined
             },
             scales:{
-                x:{
-                    ticks:{color:'#64748b',font:{size:10},maxTicksLimit:12},
-                    grid:{color:'rgba(51,65,85,0.3)'},
-                    title:{display:true,text:data.xLabel,color:'#94a3b8',font:{size:11,weight:'600'}}
-                },
-                y:{
-                    min:0,max:10,
-                    ticks:{stepSize:2,color:'#64748b',font:{size:10}},
-                    grid:{color:'rgba(51,65,85,0.3)'},
-                    title:{display:true,text:'指数',color:'#94a3b8',font:{size:11,weight:'600'}}
-                }
+                x:{ticks:{color:'#555',font:{size:9},maxTicksLimit:16},grid:{color:'rgba(34,34,48,0.4)'}},
+                y:{min:0,max:10,ticks:{stepSize:2,color:'#555',font:{size:9}},grid:{color:'rgba(34,34,48,0.4)'}}
             }
         }
     });
+
+    // 信号
+    const mIdx=new Date().getMonth(),mV=d80.data[mIdx];
+    const mPv=mIdx>0?d80.data[mIdx-1]:mV,mChg=mV-mPv;
+    const today=new Date();
+    signalDate.textContent=(today.getMonth()+1)+'月'+today.getDate()+'日';
+    if(mChg>0.2){signalWord.textContent='BUY 🟢';signalWord.className='signal-word buy';signalDesc.textContent='建议加仓，顺势而为';signalReason.textContent='本月运势走强，多头排列，建议积极把握机会，主动出击。';}
+    else if(mChg<-0.2){signalWord.textContent='SELL 🔴';signalWord.className='signal-word sell';signalDesc.textContent='建议减仓，防守观望';signalReason.textContent='本月运势回落，空头信号，建议收敛锋芒，蓄势待发。';}
+    else{signalWord.textContent='HOLD ⚪';signalWord.className='signal-word hold';signalDesc.textContent='建议持仓，观望等待';signalReason.textContent='本月运势横盘，市场平稳，宜稳扎稳打，不宜冒进。';}
+
+    // 分享
+    const shareContent=sd.name+'('+sd.code+'.MKT) 今日报价 '+(v>=5?'📈':'📉')+' '+v.toFixed(2)+' 元/运\n查询你的命运股票 👉 https://384485162-create.github.io/bazi-fortune\n#人生股票 #命运交易所';
+    shareText.textContent=shareContent;
 }
 
-function renderMonthly(data){
-    const ma=document.getElementById('monthlyAnalysis'),dc=document.getElementById('decadeAnalysis');
-    if(currentRange!=='month'||!monthlyDataGlobal){ma.classList.remove('show');return;}
-    ma.classList.add('show');dc.classList.remove('show');
-    const mc=document.getElementById('monthCards');mc.innerHTML='';
-    const d=monthlyDataGlobal;
-    for(let i=0;i<12;i++){
-        const f=d.fortunes[i],w=d.wealth[i],l=d.love[i],h=d.health[i],e=d.monthElements[i];
-        const mkt=f>6?'bullish':f<4?'bearish':'neutral',trend=f>6?'上升趋势':f<4?'下降趋势':'横盘整理';
-        const card=document.createElement('div');card.className='month-card '+mkt;
-        card.innerHTML=`<div class="month-header"><span class="month-name">${monthNames[i]}</span><span class="month-score">${f.toFixed(1)}点</span></div><div class="month-trend">${trend} | ${e}五行</div><div class="month-advice">${genAdvice(f,w,l,h,e,mkt)}</div>`;
-        mc.appendChild(card);
+function copyShare(){
+    const t=shareText.textContent;
+    if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>{
+        shareBtn.textContent='✅ 已复制！去分享吧';
+        setTimeout(()=>shareBtn.textContent='📋 复制分享',2000);
+    });else{
+        const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+        shareBtn.textContent='✅ 已复制！去分享吧';
+        setTimeout(()=>shareBtn.textContent='📋 复制分享',2000);
     }
 }
 
-function renderDecade(data){
-    const da=document.getElementById('decadeAnalysis'),ma=document.getElementById('monthlyAnalysis');
-    if(currentRange!=='decade'){da.classList.remove('show');return;}
-    da.classList.add('show');ma.classList.remove('show');
-    const dc=document.getElementById('decadeCards');dc.innerHTML='';
-    const ca=new Date().getFullYear()-birthYearGlobal;
-    for(let i=0;i<data.labels.length;i++){
-        const ps=data.periodStarts?data.periodStarts[i]:1+i*10;
-        const pe=ps+9,isCur=ca>=ps&&ca<=pe;
-        const f=data.fortunes[i],w=data.wealth[i],l=data.love[i],h=data.health[i];
-        const card=document.createElement('div');card.className='decade-card'+(isCur?' current':'');
-        card.innerHTML=`<div class="decade-period">${data.labels[i]}${isCur?' 📍':''}</div><div class="decade-scores">${sBar('📊',f,'#3b82f6')}${sBar('💰',w,'#f59e0b')}${sBar('💕',l,'#ec4899')}${sBar('💚',h,'#10b981')}</div>`;
-        dc.appendChild(card);
-    }
-}
+const shareBtn=document.querySelector('.share-btn');
 
-function sBar(icon,val,color){return `<div class="decade-score-row"><span class="decade-score-icon">${icon}</span><div class="decade-bar-bg"><div class="decade-bar" style="width:${(val/10*100).toFixed(0)}%;background:${color}"></div></div><span class="decade-score-val">${val.toFixed(1)}</span></div>`;}
-
-function genAdvice(f,w,l,h,e,mkt){
-    if(w>7&&mkt==='bullish')return'财运旺盛，适合开展财务规划';
-    if(l>7&&mkt==='bullish')return'情感运势佳，适合增进感情';
-    if(h>7&&mkt==='bullish')return'健康运势好，适合运动健身';
-    if(h<4)return'健康需关注，注意休息调养';
-    if(l<4)return'情感需呵护，多与亲友交流';
-    const t={bullish:['运势旺盛，宜把握良机','能量充沛，宜主动出击','诸事顺遂，大胆追求目标'],bearish:['运势平淡，宜韬光养晦','能量稍弱，多休息调养','低调行事，避免冲突'],neutral:['运势平稳，稳中求进','保持节奏，循序渐进','中庸之道，不宜冒进']};
-    return t[mkt][Math.floor(Math.random()*3)];
-}
-
-function clearAll(){
-    document.getElementById('baziSection').classList.remove('show');
-    document.getElementById('resultSection').classList.remove('show');
-    document.getElementById('baziResult').style.display='none';
+function reset(){
+    result.classList.remove('show');
+    inputSection.style.display='';
     if(chart){chart.destroy();chart=null;}
-    baziGlobal=null;monthlyDataGlobal=null;
+    document.title='人生股票 · 命运交易所';
 }
 </script>
 </body>
