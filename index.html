@@ -13,177 +13,93 @@
         }
         body{font-family:-apple-system,'PingFang SC',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
         .wrap{max-width:460px;margin:0 auto;padding:0 16px 40px}
-
-        /* ===== 首页 ===== */
         .home{text-align:center;padding:60px 0 0}
         .logo{font-size:.65em;letter-spacing:.3em;color:var(--muted);text-transform:uppercase;margin-bottom:16px}
         .h1{font-size:clamp(2.6em,12vw,4em);font-weight:900;line-height:1.1;margin-bottom:10px}
         .h1 em{font-style:normal;background:linear-gradient(135deg,var(--hot),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
         .hook{font-size:.95em;color:#888;line-height:1.7;margin-bottom:44px;max-width:320px;margin-left:auto;margin-right:auto}
-
         .form{margin-bottom:28px}
         .fi{margin-bottom:14px;text-align:left}
         .fi label{display:block;font-size:.7em;color:var(--muted);margin-bottom:5px;padding-left:2px}
-        .fi input,.fi select{
-            width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:12px;
-            font-size:16px;background:var(--bg2);color:var(--text);
-        }
+        .fi input,.fi select{width:100%;padding:14px 16px;border:1px solid var(--border);border-radius:12px;font-size:16px;background:var(--bg2);color:var(--text)}
         .fi input::placeholder{color:#333}
         .fi input:focus,.fi select:focus{outline:none;border-color:var(--gold)}
-        .fi select{
-            appearance:none;-webkit-appearance:none;
-            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-            background-repeat:no-repeat;background-position:right 12px center;text-align:center;
-        }
-        .row2{display:flex;gap:8px}
-        .row2 .fi{flex:1;margin-bottom:0}
-
-        .m-scroll{display:flex;gap:6px;overflow-x:auto;padding:2px 0;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin-bottom:28px}
-        .m-scroll::-webkit-scrollbar{display:none}
-        .mp{
-            flex-shrink:0;padding:10px 20px;border:1px solid var(--border);border-radius:24px;
-            font-size:13px;background:var(--bg2);color:var(--muted);cursor:pointer;transition:.2s;
-        }
-        .mp.on{background:linear-gradient(135deg,var(--hot),#f97316);color:#fff;border-color:transparent;font-weight:700}
-
-        .go{
-            width:100%;padding:16px;border:none;border-radius:14px;
-            background:linear-gradient(135deg,var(--hot),#f97316);
-            color:#fff;font-size:17px;font-weight:800;cursor:pointer;
-            letter-spacing:.04em;transition:.15s;
-        }
+        .fi select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;text-align:center}
+        .row2{display:flex;gap:8px}.row2 .fi{flex:1;margin-bottom:0}
+        .go{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,var(--hot),#f97316);color:#fff;font-size:17px;font-weight:800;cursor:pointer;letter-spacing:.04em}
         .go:active{transform:scale(.97)}
-
         .sub{margin-top:18px;font-size:.72em;color:#333;text-align:center;line-height:1.7}
-
-        /* ===== 结果页 ===== */
-        #r{display:none}
-        #r.show{display:block;animation:up .4s ease}
+        #r{display:none}#r.show{display:block;animation:up .4s ease}
         @keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
-
         .c{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:24px;margin-bottom:12px}
-
-        /* 行情卡 */
         .qc{position:relative;overflow:hidden}
         .qc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--hot),var(--gold),var(--cool))}
-        .qt{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+        .qt{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
         .qn{font-size:1.4em;font-weight:900}
         .qcode{font-size:.7em;color:var(--muted);font-family:'Courier New',monospace;margin-top:2px;letter-spacing:.08em}
         .badge{padding:4px 14px;border-radius:20px;font-size:.68em;font-weight:700}
-        .badge.up{background:rgba(239,68,68,.12);color:var(--hot)}
-        .badge.dn{background:rgba(16,185,129,.12);color:var(--cool)}
-        .badge.flat{background:rgba(245,158,11,.12);color:var(--gold)}
-
-        .big-num{font-size:clamp(3.5em,16vw,5.5em);font-weight:900;line-height:1;margin:8px 0 4px}
-        .big-num.up{color:var(--hot)}.big-num.dn{color:var(--cool)}
-        .big-label{font-size:.8em;color:var(--muted);margin-bottom:12px}
-        .q-change{display:flex;gap:16px;font-size:1em;font-weight:700;margin-bottom:16px}
-        .q-change.up{color:var(--hot)}.q-change.dn{color:var(--cool)}
-
-        /* 运势等级条 */
-        .level-bar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-bottom:6px}
-        .level-fill{height:100%;border-radius:3px;transition:width .6s ease}
+        .badge.up{background:rgba(239,68,68,.12);color:var(--hot)}.badge.dn{background:rgba(16,185,129,.12);color:var(--cool)}.badge.flat{background:rgba(245,158,11,.12);color:var(--gold)}
+        .prices{display:flex;gap:0;margin:12px 0 16px}
+        .price-col{flex:1;text-align:center}
+        .price-col:first-child{border-right:1px solid var(--border)}
+        .price-lbl{font-size:.65em;color:var(--muted);margin-bottom:4px}
+        .price-num{font-size:clamp(1.8em,8vw,2.6em);font-weight:900;line-height:1.1}
+        .price-num.up{color:var(--hot)}.price-num.dn{color:var(--cool)}
+        .price-chg{font-size:.75em;font-weight:700;margin-top:2px}
+        .price-chg.up{color:var(--hot)}.price-chg.dn{color:var(--cool)}
+        .level-bar{height:5px;background:var(--bg3);border-radius:3px;overflow:hidden;margin-bottom:4px}
+        .level-fill{height:100%;border-radius:3px;transition:width .6s}
         .level-text{font-size:.72em;color:var(--muted);text-align:right}
-
-        /* K线 */
         .cc{padding:18px 14px 10px}
         .cc-hd{font-size:.75em;color:var(--muted);margin-bottom:8px}
         #kline{width:100%;display:block;cursor:crosshair}
-
-        /* 月度运势 */
-        .mc .mc-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
-        .mc .mc-row:last-child{border-bottom:none}
-        .mc-label{font-size:.85em}
-        .mc-val{font-size:1.1em;font-weight:700;font-family:'Courier New',monospace}
-        .mc-val.up{color:var(--hot)}.mc-val.dn{color:var(--cool)}
-
-        /* 命运代码 */
-        .code-card{text-align:center}
-        .code-hint{font-size:.72em;color:var(--muted);margin-bottom:12px}
-        .code-num{
-            display:inline-block;font-family:'Courier New',monospace;font-size:clamp(1.2em,6vw,1.6em);
-            font-weight:700;letter-spacing:.2em;color:var(--gold);
-            background:var(--bg3);border:1px solid rgba(245,158,11,.2);border-radius:12px;padding:14px 24px;
-        }
-        .code-sub{font-size:.68em;color:#444;margin-top:10px}
-
-        /* 分享 */
-        .share-card{text-align:center}
-        .share-preview{
-            background:var(--bg3);border-radius:14px;padding:16px;margin-bottom:14px;
-            font-size:.82em;line-height:1.7;color:var(--text);text-align:left;
-            border-left:3px solid var(--gold);word-break:break-all;
-        }
-        .share-btn{
-            width:100%;padding:14px;background:linear-gradient(135deg,var(--hot),#f97316);
-            border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;
-        }
-        .share-btn:active{transform:scale(.97)}
-
-        .back{
-            display:block;width:100%;padding:13px;background:transparent;border:1px solid var(--border);
-            border-radius:12px;color:var(--muted);font-size:14px;cursor:pointer;margin-top:12px;
-        }
+        .sig-card{text-align:center}
+        .sig-lbl{font-size:.72em;color:var(--muted);margin-bottom:8px}
+        .sig-trend{font-size:1.8em;font-weight:900;margin-bottom:6px}
+        .sig-trend.up{color:var(--hot)}.sig-trend.dn{color:var(--cool)}.sig-trend.flat{color:var(--gold)}
+        .sig-tip{font-size:.88em;color:var(--text);line-height:1.7;background:var(--bg3);border-radius:10px;padding:14px 16px;text-align:left}
+        .back{display:block;width:100%;padding:13px;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-size:14px;cursor:pointer;margin-top:12px}
         .foot{text-align:center;padding:20px 0;color:#222;font-size:.65em}
     </style>
 </head>
 <body>
 <div class="wrap">
-
-<!-- ===== 首页 ===== -->
 <div id="home">
     <div class="home">
         <div class="logo">MKT · 命运交易所</div>
         <div class="h1">你的人生<br>值<em>多少钱</em></div>
-        <div class="hook">输入你的出生信息<br>生成专属人生代码 · 一生运势一目了然</div>
-
+        <div class="hook">输入出生信息<br>生成专属人生代码 · 一生运势一目了然</div>
         <div class="form">
-            <div class="fi">
-                <label>你的名字</label>
-                <input type="text" id="iName" placeholder="给自己取个代号" maxlength="10">
-            </div>
+            <div class="fi"><label>你的名字</label><input type="text" id="iName" placeholder="给自己取个代号" maxlength="10"></div>
             <div class="row2">
                 <div class="fi"><label>年</label><select id="iYear"></select></div>
-                <div class="fi"><label>月</label>
-                    <select id="iMonth">
-                        <option value="1">1月</option><option value="2">2月</option><option value="3">3月</option>
-                        <option value="4">4月</option><option value="5">5月</option><option value="6">6月</option>
-                        <option value="7">7月</option><option value="8">8月</option><option value="9">9月</option>
-                        <option value="10">10月</option><option value="11">11月</option><option value="12">12月</option>
-                    </select>
-                </div>
+                <div class="fi"><label>月</label><select id="iMonth"><option value="1">1月</option><option value="2">2月</option><option value="3">3月</option><option value="4">4月</option><option value="5">5月</option><option value="6">6月</option><option value="7">7月</option><option value="8">8月</option><option value="9">9月</option><option value="10">10月</option><option value="11">11月</option><option value="12">12月</option></select></div>
                 <div class="fi"><label>日</label><select id="iDay"></select></div>
-                <div class="fi"><label>时辰</label>
-                    <select id="iHour">
-                        <option value="0">子时</option><option value="1">丑时</option><option value="2">寅时</option>
-                        <option value="3">卯时</option><option value="4">辰时</option><option value="5">巳时</option>
-                        <option value="6">午时</option><option value="7">未时</option><option value="8">申时</option>
-                        <option value="9">酉时</option><option value="10">戌时</option><option value="11">亥时</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="fi">
-                <label>想看哪个月的运势？</label>
-                <div class="m-scroll" id="mScroll"></div>
+                <div class="fi"><label>时辰</label><select id="iHour"><option value="0">子时</option><option value="1">丑时</option><option value="2">寅时</option><option value="3">卯时</option><option value="4">辰时</option><option value="5">巳时</option><option value="6">午时</option><option value="7">未时</option><option value="8">申时</option><option value="9">酉时</option><option value="10">戌时</option><option value="11">亥时</option></select></div>
             </div>
         </div>
-
         <button class="go" onclick="go()">🔥 查看我的命运代码</button>
-        <div class="sub">纯属娱乐 · 基于传统八字算法生成<br>每个人的代码都不一样</div>
+        <div class="sub">纯属娱乐 · 基于传统八字算法<br>每个人的代码都不一样</div>
     </div>
 </div>
 
-<!-- ===== 结果页 ===== -->
 <div id="r">
     <div class="c qc">
         <div class="qt">
             <div><div class="qn" id="rName">—</div><div class="qcode" id="rCode">——————</div></div>
             <span class="badge" id="rBadge">—</span>
         </div>
-        <div class="big-num" id="rNum">—</div>
-        <div class="big-label" id="rLabel">当前运势指数</div>
-        <div class="q-change" id="rChg"></div>
+        <div class="prices">
+            <div class="price-col">
+                <div class="price-lbl">📅 上市价格</div>
+                <div class="price-num" id="rIPO">—</div>
+            </div>
+            <div class="price-col">
+                <div class="price-lbl">💰 当前价格</div>
+                <div class="price-num" id="rNow">—</div>
+                <div class="price-chg" id="rNowChg"></div>
+            </div>
+        </div>
         <div class="level-bar"><div class="level-fill" id="rFill"></div></div>
         <div class="level-text" id="rLvl">—</div>
     </div>
@@ -193,17 +109,10 @@
         <canvas id="kline"></canvas>
     </div>
 
-    <div class="c mc" id="rMonths"></div>
-
-    <div class="c code-card">
-        <div class="code-hint">🔐 你的专属命运代码</div>
-        <div class="code-num" id="rCodeBox">——————</div>
-        <div class="code-sub">全世界只有你拥有这个代码</div>
-    </div>
-
-    <div class="c share-card">
-        <div class="share-preview" id="rShare">—</div>
-        <button class="share-btn" id="shareBtn" onclick="copyShare()">📋 复制 · 分享给朋友</button>
+    <div class="c sig-card">
+        <div class="sig-lbl" id="rSigLbl">—</div>
+        <div class="sig-trend" id="rSigTrend">—</div>
+        <div class="sig-tip" id="rSigTip">—</div>
     </div>
 
     <button class="back" onclick="back()">↩ 换个人试试</button>
@@ -214,41 +123,26 @@
 <script>
 const TG='甲乙丙丁戊己庚辛壬癸'.split('');
 const DZ='子丑寅卯辰巳午未申酉戌亥'.split('');
-let bd=null,sd=null,qMonth=new Date().getMonth();
+let bd=null,sd=null;
 
 (function(){
     const ys=document.getElementById('iYear');
     for(let y=2025;y>=1940;y--){const o=document.createElement('option');o.value=y;o.textContent=y+'年';if(y===1995)o.selected=true;ys.appendChild(o)}
     updDays();ys.onchange=updDays;document.getElementById('iMonth').onchange=updDays;
-    const ms=document.getElementById('mScroll'),now=new Date();
-    for(let m=0;m<12;m++){
-        const p=document.createElement('div');p.className='mp'+(m===now.getMonth()?' on':'');
-        p.textContent=(m+1)+'月';p.dataset.m=m;
-        p.onclick=function(){document.querySelectorAll('.mp').forEach(x=>x.classList.remove('on'));this.classList.add('on');qMonth=+this.dataset.m};
-        ms.appendChild(p);
-    }
 })();
-
 function updDays(){
     const y=+document.getElementById('iYear').value,m=+document.getElementById('iMonth').value;
     const ds=document.getElementById('iDay'),mx=new Date(y,m,0).getDate(),old=+ds.value||1;
-    ds.innerHTML='';
-    for(let d=1;d<=mx;d++){const o=document.createElement('option');o.value=d;o.textContent=d+'日';if(d===Math.min(old,mx))o.selected=true;ds.appendChild(o)}
+    ds.innerHTML='';for(let d=1;d<=mx;d++){const o=document.createElement('option');o.value=d;o.textContent=d+'日';if(d===Math.min(old,mx))o.selected=true;ds.appendChild(o)}
 }
 
-const gY=y=>({gan:TG[(y-4)%10+(10)%10]%10],zhi:DZ[(y-4)%12+(12)%12]%12]});
+const gY=y=>({gan:TG[((y-4)%10+10)%10],zhi:DZ[((y-4)%12+12)%12]});
 const gM=(y,m)=>{const g=(y-4)%10,gs=(g%5)*2;return{gan:TG[(gs+m-1)%10],zhi:DZ[m%12]}};
 function gD(y,m,d){const b=new Date(1900,0,31),t=new Date(y,m-1,d),df=Math.floor((t-b)/864e5);return{gan:TG[((df%10)+10)%10],zhi:DZ[((df%12)+12)%12]}}
 function gH(dg,h){return{gan:TG[(TG.indexOf(dg)+h)%10],zhi:DZ[h]}}
-
-function mkCode(bz){
-    const s=bz.year.gan+bz.year.zhi+bz.month.gan+bz.month.zhi+bz.day.gan+bz.day.zhi+bz.hour.gan+bz.hour.zhi;
-    let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h)+s.charCodeAt(i);
-    return(Math.abs(h)%100000000).toString().padStart(8,'0');
-}
+function mkCode(bz){const s=bz.year.gan+bz.year.zhi+bz.month.gan+bz.month.zhi+bz.day.gan+bz.day.zhi+bz.hour.gan+bz.hour.zhi;let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h)+s.charCodeAt(i);return(Math.abs(h)%100000000).toString().padStart(8,'0')}
 function mkName(bz,n){return(n&&n.trim())?n.trim():['天命','星途','鸿运','青云','龙腾','锦绣','祥云','鹏程','瑞泽','金榜'][Math.abs((bz.day.gan.charCodeAt(0)+bz.day.zhi.charCodeAt(0))%10)]}
 function score(bz){return(bz.year.gan.charCodeAt(0)+bz.month.gan.charCodeAt(0)+bz.day.gan.charCodeAt(0)+bz.hour.gan.charCodeAt(0))%50}
-
 function gen80(bz){
     const s=score(bz),ls=[],da=[];
     let seed=bz.year.gan.charCodeAt(0)*1000+bz.month.gan.charCodeAt(0)*100+bz.day.gan.charCodeAt(0)*10+bz.hour.gan.charCodeAt(0);
@@ -257,18 +151,25 @@ function gen80(bz){
     return{labels:ls,data:da}
 }
 
-// 月度数据（12个月插值）
-function genMonth(d80,bz){
-    const y0=bz.y,curY=new Date().getFullYear();
-    const mArr=[];
-    for(let m=0;m<12;m++){
-        const age=curY-y0+(m-new Date().getMonth());
-        const idx=Math.max(0,Math.min(79,age-1));
-        const pv=Math.max(0,idx-1);
-        const v=d80.data[idx],p=d80.data[pv];
-        mArr.push({m,v,pv:p,chg:v-p});
-    }
-    return mArr;
+// 月度运势建议
+function monthAdvice(bz,monthVal,monthChg){
+    // 五行分析确定方向
+    const wg='甲乙'.includes(bz.day.gan)||'寅卯'.includes(bz.day.zhi)?'木':
+            '丙丁'.includes(bz.day.gan)||'巳午'.includes(bz.day.zhi)?'火':
+            '戊己'.includes(bz.day.gan)||'辰戌丑未'.includes(bz.day.zhi)?'土':
+            '庚辛'.includes(bz.day.gan)||'申酉'.includes(bz.day.zhi)?'金':'水';
+    const aspects={
+        '木':[{n:'事业',t:'新的机会正在萌芽，适合主动出击、拓展人脉',d:'宜稳守，不宜冒进，等待时机成熟'},{n:'感情',t:'桃花运渐旺，多社交有机会遇到心动的人',d:'感情需耐心经营，避免冲动决定'},{n:'财运',t:'正财稳步上涨，适合积累和长期规划',d:'偏财运弱，避免投机和冲动消费'},{n:'健康',t:'精力充沛，适合开始新的运动计划',d:'注意肝胆和筋骨保养，劳逸结合'}],
+        '火':[{n:'财运',t:'偏财运旺盛，贵人运加持，收入有望提升',d:'守财为主，控制开支，避免借贷'},{n:'事业',t:'声望提升，适合展示才华、争取晋升',d:'低调行事，避免与上级正面冲突'},{n:'感情',t:'热情高涨，感情关系升温，表白好时机',d:'控制情绪，避免因急躁影响关系'},{n:'健康',t:'心脏和血液循环良好，注意睡眠质量',d:'小心上火，多喝水，少熬夜'}],
+        '土':[{n:'财运',t:'正财运极佳，踏实努力将获得丰厚回报',d:'不宜冒险投资，稳健为主'},{n:'健康',t:'脾胃功能良好，身体基础稳固',d:'注意消化系统，饮食规律'},{n:'事业',t:'贵人相助，团队合作顺利，稳步推进',d:'避免独断专行，多听取意见'},{n:'感情',t:'感情稳定踏实，适合谈婚论嫁',d:'不要过于固执，给对方空间'}],
+        '金':[{n:'财运',t:'收获季节，之前的投资将看到回报',d:'谨慎理财，不宜大额支出'},{n:'事业',t:'执行力超群，适合攻坚克难、拿下大项目',d:'避免锋芒太露，低调做人'},{n:'感情',t:'魅力值提升，异性缘增强',d:'感情中不要太挑剔，珍惜眼前人'},{n:'健康',t:'肺部和呼吸系统状态好',d:'注意皮肤干燥，多补水'}],
+        '水':[{n:'感情',t:'智慧型魅力散发，沟通能力超群，社交运佳',d:'避免想太多，感情需要行动而非思考'},{n:'财运',t:'流动性强，财来财去快，注意把握节奏',d:'避免大手大脚，做好预算'},{n:'事业',t:'灵感爆棚，创意类工作表现突出',d:'执行力可能不足，需要搭配实干伙伴'},{n:'健康',t:'肾脏和泌尿系统需关注',d:'注意保暖，少喝冷饮'}]
+    };
+    const pool=aspects[wg];
+    // 根据月份值选一个方面
+    const idx=(monthVal*7+monthChg*3)%4|0;
+    const item=pool[Math.abs(idx)%4];
+    return{aspect:item.n, up:item.t, down:item.d};
 }
 
 function drawK(d80,age){
@@ -276,40 +177,24 @@ function drawK(d80,age){
     const W=cv.offsetWidth,H=180;cv.width=W*2;cv.height=H*2;cv.style.height=H+'px';ctx.scale(2,2);
     const n=80,pL=36,pR=4,pT=8,pB=20,cW=W-pL-pR,cH=H-pT-pB;
     const x0=i=>pL+i/n*cW,yV=v=>pT+(1-(v-1)/9)*cH;
-
     ctx.clearRect(0,0,W,H);ctx.fillStyle='#101018';ctx.fillRect(0,0,W,H);
     ctx.font='9px -apple-system,sans-serif';ctx.textAlign='right';
     for(let v=2;v<=10;v+=2){const y=yV(v);ctx.strokeStyle='rgba(30,30,48,.5)';ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(pL+cW,y);ctx.stroke();ctx.fillStyle='#383848';ctx.fillText(v,pL-3,y+3)}
-    ctx.textAlign='center';
-    for(let i=0;i<n;i+=10)ctx.fillText(d80.labels[i],x0(i),H-4);
-
-    // 渐变填充
+    ctx.textAlign='center';for(let i=0;i<n;i+=10)ctx.fillText(d80.labels[i],x0(i),H-4);
     const g=ctx.createLinearGradient(0,pT,0,pT+cH);
     g.addColorStop(0,'rgba(239,68,68,.12)');g.addColorStop(.5,'rgba(239,68,68,.02)');g.addColorStop(1,'rgba(16,185,129,0)');
-    ctx.beginPath();ctx.moveTo(x0(0),yV(d80.data[0]));
-    for(let i=1;i<n;i++)ctx.lineTo(x0(i),yV(d80.data[i]));
-    ctx.lineTo(x0(n-1),pT+cH);ctx.lineTo(x0(0),pT+cH);ctx.closePath();ctx.fillStyle=g;ctx.fill();
-
-    // 线
+    ctx.beginPath();ctx.moveTo(x0(0),yV(d80.data[0]));for(let i=1;i<n;i++)ctx.lineTo(x0(i),yV(d80.data[i]));ctx.lineTo(x0(n-1),pT+cH);ctx.lineTo(x0(0),pT+cH);ctx.closePath();ctx.fillStyle=g;ctx.fill();
     const ci=Math.max(0,age-1);
-    ctx.beginPath();
-    for(let i=0;i<n;i++){const x=x0(i),y=yV(d80.data[i]);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)}
-    const lc=d80.data[ci]>=5?'#ef4444':'#10b981';ctx.strokeStyle=lc;ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.stroke();
-
-    // 当前年龄光标
+    ctx.beginPath();for(let i=0;i<n;i++){const x=x0(i),y=yV(d80.data[i]);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)}
+    ctx.strokeStyle=d80.data[ci]>=5?'#ef4444':'#10b981';ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.stroke();
     const cx=x0(ci),cy=yV(d80.data[ci]);
-    ctx.setLineDash([3,3]);ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;
-    ctx.beginPath();ctx.moveTo(cx,pT);ctx.lineTo(cx,pT+cH);ctx.stroke();ctx.setLineDash([]);
-    ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle=lc;ctx.fill();
-    ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
-    ctx.fillStyle='#fff';ctx.font='bold 11px -apple-system,sans-serif';ctx.textAlign='left';
-    ctx.fillText(d80.data[ci].toFixed(2),cx+8,cy-4);
+    ctx.setLineDash([3,3]);ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx,pT);ctx.lineTo(cx,pT+cH);ctx.stroke();ctx.setLineDash([]);
+    ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle=d80.data[ci]>=5?'#ef4444':'#10b981';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.fillStyle='#fff';ctx.font='bold 11px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(d80.data[ci].toFixed(2),cx+8,cy-4);
 }
 
 function go(){
-    const y=+document.getElementById('iYear').value,m=+document.getElementById('iMonth').value;
-    const d=+document.getElementById('iDay').value,h=+document.getElementById('iHour').value;
-    const nm=document.getElementById('iName').value;
+    const y=+document.getElementById('iYear').value,m=+document.getElementById('iMonth').value,d=+document.getElementById('iDay').value,h=+document.getElementById('iHour').value,nm=document.getElementById('iName').value;
     if(d>new Date(y,m,0).getDate()){alert('日期不对哦');return}
     bd={year:gY(y),month:gM(y,m),day:gD(y,m,d),hour:gH(gD(y,m,d).gan,h),y,m};
     sd={code:mkCode(bd),name:mkName(bd,nm)};
@@ -322,14 +207,25 @@ function go(){
 function render(){
     const age=new Date().getFullYear()-bd.y;
     const d80=gen80(bd);
+    const ipo=d80.data[0]; // 上市价 = 1岁
     const idx=Math.max(0,age-1),v=d80.data[idx],pv=d80.data[Math.max(0,idx-1)];
     const chg=v-pv,pct=(chg/pv*100).toFixed(1),up=v>=5;
 
     document.getElementById('rName').textContent=sd.name;
     document.getElementById('rCode').textContent=sd.code+' · MKT';
 
-    const ne=document.getElementById('rNum');ne.textContent=v.toFixed(2);ne.className='big-num '+(up?'up':'dn');
-    document.getElementById('rLabel').textContent='当前运势指数';
+    // 上市价
+    const ipoEl=document.getElementById('rIPO');
+    ipoEl.textContent=ipo.toFixed(2);
+    ipoEl.className='price-num up';
+
+    // 当前价
+    const nowEl=document.getElementById('rNow');
+    nowEl.textContent=v.toFixed(2);
+    nowEl.className='price-num '+(up?'up':'dn');
+    const nowChg=document.getElementById('rNowChg');
+    nowChg.textContent=(chg>=0?'▲ ':'▼ ')+Math.abs(chg).toFixed(2)+' ('+(chg>=0?'+':'−')+pct+'%)';
+    nowChg.className='price-chg '+(chg>=0?'up':'dn');
 
     // 等级
     let lvl,pctFill;
@@ -337,48 +233,28 @@ function render(){
     else if(v>=5.5){lvl='📈 旺';pctFill=65}else if(v>=4.5){lvl='➡ 平';pctFill=50}
     else if(v>=3.5){lvl='📉 弱';pctFill=32}else{lvl='🌫 低迷';pctFill=18}
     const fill=document.getElementById('rFill');
-    fill.style.width=pctFill+'%';
-    fill.style.background=up?'linear-gradient(90deg,#ef4444,#f97316)':'linear-gradient(90deg,#10b981,#06b6d4)';
-    document.getElementById('rLvl').textContent=lvl+' ('+v.toFixed(1)+'/10)';
+    fill.style.width=pctFill+'%';fill.style.background=up?'linear-gradient(90deg,#ef4444,#f97316)':'linear-gradient(90deg,#10b981,#06b6d4)';
+    document.getElementById('rLvl').textContent=lvl;
 
-    // 涨跌
+    // badge
     const badge=document.getElementById('rBadge');
     if(chg>0){badge.textContent='📈 涨';badge.className='badge up'}else if(chg<0){badge.textContent='📉 跌';badge.className='badge dn'}else{badge.textContent='➡ 平';badge.className='badge flat'}
-    document.getElementById('rChg').className='q-change '+(chg>=0?'up':'dn');
-    document.getElementById('rChg').innerHTML=
-        '<span>'+(chg>=0?'▲':'▼')+' '+Math.abs(chg).toFixed(2)+'</span>'+
-        '<span>'+(chg>=0?'+':'−')+pct+'%</span>';
 
-    // K线
     drawK(d80,age);
 
-    // 月份列表
-    const mds=genMonth(d80,bd);
-    const mNames=['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
-    let mHtml='';
-    mds.forEach(d=>{
-        const u=d.chg>=0;
-        mHtml+='<div class="mc-row"><span class="mc-label">'+mNames[d.m]+(d.m===qMonth?' ⬅':'')+'</span><span class="mc-val '+(u?'up':'dn')+'">'+d.v.toFixed(2)+(u?' ▲':' ▼')+'</span></div>';
-    });
-    document.getElementById('rMonths').innerHTML='<div class="cc-hd">📅 全年运势</div>'+mHtml;
-
-    // 代码
-    document.getElementById('rCodeBox').textContent=sd.code;
-
-    // 分享文案
-    const qv=mds[qMonth].v;
-    const emojis=['🌑','🌒','🌓','🌔','🌕','🌖','🌗','🌘','🌙','⭐','🌟','💫'];
-    document.getElementById('rShare').textContent=
-        sd.name+'的命运代码是 '+sd.code+'\n'+
-        mNames[qMonth]+'运势指数：'+qv.toFixed(2)+' '+emojis[Math.floor(qv)]+'\n'+
-        '🔥 来看看你的人生值多少钱 👇\n'+
-        'https://384485162-create.github.io/bazi-fortune\n#人生股票 #命运代码';
-}
-
-function copyShare(){
-    const t=document.getElementById('rShare').textContent,b=document.getElementById('shareBtn');
-    if(navigator.clipboard){navigator.clipboard.writeText(t).then(()=>{b.textContent='✅ 已复制！快去分享';setTimeout(()=>b.textContent='📋 复制 · 分享给朋友',2500)})}
-    else{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);b.textContent='✅ 已复制！快去分享';setTimeout(()=>b.textContent='📋 复制 · 分享给朋友',2500)}
+    // 当月运势
+    const curM=new Date().getMonth();
+    const mAge=age+(curM-curM); // 简化：当前月就是当前年龄
+    const mIdx=Math.max(0,Math.min(79,age-1));
+    const mV=d80.data[mIdx],mPv=d80.data[Math.max(0,mIdx-1)];
+    const mChg=mV-mPv;
+    const advice=monthAdvice(bd,mV,mChg);
+    document.getElementById('rSigLbl').textContent='📅 '+(curM+1)+'月 '+advice.aspect+'运势参考';
+    const trendEl=document.getElementById('rSigTrend');
+    if(mChg>0.15){trendEl.textContent='📈 预计涨';trendEl.className='sig-trend up'}
+    else if(mChg<-0.15){trendEl.textContent='📉 预计跌';trendEl.className='sig-trend dn'}
+    else{trendEl.textContent='➡ 预计平稳';trendEl.className='sig-trend flat'}
+    document.getElementById('rSigTip').textContent=mChg>=0?advice.up:advice.down;
 }
 
 function back(){document.getElementById('r').classList.remove('show');document.getElementById('home').style.display='';document.title='人生股票 · 看看你的命运值多少钱'}
