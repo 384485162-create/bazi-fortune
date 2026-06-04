@@ -147,13 +147,12 @@ function gen80(bz){
     const s=score(bz),ls=[],da=[];
     let seed=bz.year.gan.charCodeAt(0)*1000+bz.month.gan.charCodeAt(0)*100+bz.day.gan.charCodeAt(0)*10+bz.hour.gan.charCodeAt(0);
     function R(){seed=(seed*9301+49297)%233280;return seed/233280}
-    for(let a=1;a<=80;a++){ls.push(a+'岁');const w=Math.sin((a-1)*Math.PI/10)*2.5,x=Math.sin((a-1)*Math.PI/6)*1.5;da.push(+(Math.max(1.5,Math.min(9.5,5+s/40+w+x+Math.sin((a-s%20)*Math.PI/5)+(R()-.5)*.6)).toFixed(2)))}
+    for(let a=1;a<=80;a++){ls.push(a+'岁');const w=Math.sin((a-1)*Math.PI/10)*2.5,x=Math.sin((a-1)*Math.PI/6)*1.5;da.push(+(Math.max(15,Math.min(95,50+s/4+w*10+x*10+Math.sin((a-s%20)*Math.PI/5)*10+(R()-.5)*6)).toFixed(2)))}
     return{labels:ls,data:da}
 }
 
 // 月度运势建议
 function monthAdvice(bz,monthVal,monthChg){
-    // 五行分析确定方向
     const wg='甲乙'.includes(bz.day.gan)||'寅卯'.includes(bz.day.zhi)?'木':
             '丙丁'.includes(bz.day.gan)||'巳午'.includes(bz.day.zhi)?'火':
             '戊己'.includes(bz.day.gan)||'辰戌丑未'.includes(bz.day.zhi)?'土':
@@ -166,7 +165,6 @@ function monthAdvice(bz,monthVal,monthChg){
         '水':[{n:'感情',t:'智慧型魅力散发，沟通能力超群，社交运佳',d:'避免想太多，感情需要行动而非思考'},{n:'财运',t:'流动性强，财来财去快，注意把握节奏',d:'避免大手大脚，做好预算'},{n:'事业',t:'灵感爆棚，创意类工作表现突出',d:'执行力可能不足，需要搭配实干伙伴'},{n:'健康',t:'肾脏和泌尿系统需关注',d:'注意保暖，少喝冷饮'}]
     };
     const pool=aspects[wg];
-    // 根据月份值选一个方面
     const idx=(monthVal*7+monthChg*3)%4|0;
     const item=pool[Math.abs(idx)%4];
     return{aspect:item.n, up:item.t, down:item.d};
@@ -176,20 +174,20 @@ function drawK(d80,age){
     const cv=document.getElementById('kline'),ctx=cv.getContext('2d');
     const W=cv.offsetWidth,H=180;cv.width=W*2;cv.height=H*2;cv.style.height=H+'px';ctx.scale(2,2);
     const n=80,pL=36,pR=4,pT=8,pB=20,cW=W-pL-pR,cH=H-pT-pB;
-    const x0=i=>pL+i/n*cW,yV=v=>pT+(1-(v-1)/9)*cH;
+    const x0=i=>pL+i/n*cW,yV=v=>pT+(1-(v-10)/90)*cH;
     ctx.clearRect(0,0,W,H);ctx.fillStyle='#101018';ctx.fillRect(0,0,W,H);
     ctx.font='9px -apple-system,sans-serif';ctx.textAlign='right';
-    for(let v=2;v<=10;v+=2){const y=yV(v);ctx.strokeStyle='rgba(30,30,48,.5)';ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(pL+cW,y);ctx.stroke();ctx.fillStyle='#383848';ctx.fillText(v,pL-3,y+3)}
+    for(let v=20;v<=100;v+=20){const y=yV(v);ctx.strokeStyle='rgba(30,30,48,.5)';ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(pL,y);ctx.lineTo(pL+cW,y);ctx.stroke();ctx.fillStyle='#383848';ctx.fillText(v,pL-3,y+3)}
     ctx.textAlign='center';for(let i=0;i<n;i+=10)ctx.fillText(d80.labels[i],x0(i),H-4);
     const g=ctx.createLinearGradient(0,pT,0,pT+cH);
     g.addColorStop(0,'rgba(239,68,68,.12)');g.addColorStop(.5,'rgba(239,68,68,.02)');g.addColorStop(1,'rgba(16,185,129,0)');
     ctx.beginPath();ctx.moveTo(x0(0),yV(d80.data[0]));for(let i=1;i<n;i++)ctx.lineTo(x0(i),yV(d80.data[i]));ctx.lineTo(x0(n-1),pT+cH);ctx.lineTo(x0(0),pT+cH);ctx.closePath();ctx.fillStyle=g;ctx.fill();
     const ci=Math.max(0,age-1);
     ctx.beginPath();for(let i=0;i<n;i++){const x=x0(i),y=yV(d80.data[i]);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y)}
-    ctx.strokeStyle=d80.data[ci]>=5?'#ef4444':'#10b981';ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.stroke();
+    ctx.strokeStyle=d80.data[ci]>=50?'#ef4444':'#10b981';ctx.lineWidth=2.5;ctx.lineJoin='round';ctx.stroke();
     const cx=x0(ci),cy=yV(d80.data[ci]);
     ctx.setLineDash([3,3]);ctx.strokeStyle='rgba(255,255,255,.12)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx,pT);ctx.lineTo(cx,pT+cH);ctx.stroke();ctx.setLineDash([]);
-    ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle=d80.data[ci]>=5?'#ef4444':'#10b981';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
+    ctx.beginPath();ctx.arc(cx,cy,5,0,Math.PI*2);ctx.fillStyle=d80.data[ci]>=50?'#ef4444':'#10b981';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=1.5;ctx.stroke();
     ctx.fillStyle='#fff';ctx.font='bold 11px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(d80.data[ci].toFixed(2),cx+8,cy-4);
 }
 
@@ -207,9 +205,9 @@ function go(){
 function render(){
     const age=new Date().getFullYear()-bd.y;
     const d80=gen80(bd);
-    const ipo=d80.data[0]; // 上市价 = 1岁
-    const idx=Math.max(0,age-1),v=d80.data[idx],pv=d80.data[Math.max(0,idx-1)];
-    const chg=v-pv,pct=(chg/pv*100).toFixed(1),up=v>=5;
+    const ipo=d80.data[0];
+    const idx=Math.max(0,age-1),v=d80.data[idx];
+    const chg=v-ipo,pct=(chg/ipo*100).toFixed(1),up=v>=50;
 
     document.getElementById('rName').textContent=sd.name;
     document.getElementById('rCode').textContent=sd.code+' · MKT';
@@ -229,9 +227,9 @@ function render(){
 
     // 等级
     let lvl,pctFill;
-    if(v>=8){lvl='🌟 大吉';pctFill=95}else if(v>=7){lvl='✨ 吉';pctFill=82}
-    else if(v>=5.5){lvl='📈 旺';pctFill=65}else if(v>=4.5){lvl='➡ 平';pctFill=50}
-    else if(v>=3.5){lvl='📉 弱';pctFill=32}else{lvl='🌫 低迷';pctFill=18}
+    if(v>=80){lvl='🌟 大吉';pctFill=95}else if(v>=70){lvl='✨ 吉';pctFill=82}
+    else if(v>=55){lvl='📈 旺';pctFill=65}else if(v>=45){lvl='➡ 平';pctFill=50}
+    else if(v>=35){lvl='📉 弱';pctFill=32}else{lvl='🌫 低迷';pctFill=18}
     const fill=document.getElementById('rFill');
     fill.style.width=pctFill+'%';fill.style.background=up?'linear-gradient(90deg,#ef4444,#f97316)':'linear-gradient(90deg,#10b981,#06b6d4)';
     document.getElementById('rLvl').textContent=lvl;
@@ -242,17 +240,16 @@ function render(){
 
     drawK(d80,age);
 
-    // 当月运势
+    // 当月运势（对比上市价）
     const curM=new Date().getMonth();
-    const mAge=age+(curM-curM); // 简化：当前月就是当前年龄
     const mIdx=Math.max(0,Math.min(79,age-1));
-    const mV=d80.data[mIdx],mPv=d80.data[Math.max(0,mIdx-1)];
-    const mChg=mV-mPv;
+    const mV=d80.data[mIdx];
+    const mChg=mV-ipo;
     const advice=monthAdvice(bd,mV,mChg);
     document.getElementById('rSigLbl').textContent='📅 '+(curM+1)+'月 '+advice.aspect+'运势参考';
     const trendEl=document.getElementById('rSigTrend');
-    if(mChg>0.15){trendEl.textContent='📈 预计涨';trendEl.className='sig-trend up'}
-    else if(mChg<-0.15){trendEl.textContent='📉 预计跌';trendEl.className='sig-trend dn'}
+    if(mChg>1.5){trendEl.textContent='📈 预计涨';trendEl.className='sig-trend up'}
+    else if(mChg<-1.5){trendEl.textContent='📉 预计跌';trendEl.className='sig-trend dn'}
     else{trendEl.textContent='➡ 预计平稳';trendEl.className='sig-trend flat'}
     document.getElementById('rSigTip').textContent=mChg>=0?advice.up:advice.down;
 }
