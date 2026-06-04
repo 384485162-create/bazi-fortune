@@ -57,9 +57,16 @@
         .sig-lbl{font-size:.72em;color:var(--muted);margin-bottom:8px}
         .sig-trend{font-size:1.8em;font-weight:900;margin-bottom:6px}
         .sig-trend.up{color:var(--hot)}.sig-trend.dn{color:var(--cool)}.sig-trend.flat{color:var(--gold)}
-        .sig-tip{font-size:.85em;color:var(--text);line-height:1.8;background:var(--bg3);border-radius:12px;padding:16px 18px;text-align:left}
-.sig-tip b{color:var(--gold);font-weight:600}
-.sig-divider{height:1px;background:var(--border);margin:10px 0}
+        .sig-lines{margin-top:12px;text-align:left}
+.sig-row{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);font-size:.85em;line-height:1.6}
+.sig-row:last-child{border-bottom:none}
+.sig-row .sig-ico{flex-shrink:0;width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.sig-row .sig-ico.money{background:rgba(245,158,11,.12);color:var(--gold)}
+.sig-row .sig-ico.love{background:rgba(239,68,68,.12);color:var(--hot)}
+.sig-row .sig-ico.health{background:rgba(16,185,129,.12);color:var(--cool)}
+.sig-row .sig-txt{flex:1;color:var(--text)}
+.sig-row .sig-tag{flex-shrink:0;font-size:.65em;padding:2px 8px;border-radius:6px;font-weight:700;margin-top:2px}
+.sig-tag.up{background:rgba(239,68,68,.1);color:var(--hot)}.sig-tag.dn{background:rgba(16,185,129,.1);color:var(--cool)}.sig-tag.flat{background:rgba(245,158,11,.1);color:var(--gold)}
         .back{display:block;width:100%;padding:13px;background:transparent;border:1px solid var(--border);border-radius:12px;color:var(--muted);font-size:14px;cursor:pointer;margin-top:12px}
         .foot{text-align:center;padding:20px 0;color:#222;font-size:.65em}
     </style>
@@ -114,7 +121,7 @@
     <div class="c sig-card">
         <div class="sig-lbl" id="rSigLbl">—</div>
         <div class="sig-trend" id="rSigTrend">—</div>
-        <div class="sig-tip" id="rSigTip">—</div>
+        <div id="rThreeLine"></div>
     </div>
 
     <button class="back" onclick="back()">↩ 换个人试试</button>
@@ -155,68 +162,54 @@ function gen80(bz){
 
 // 月度运势建议
 function monthAdvice(bz,mv,mc){
-    const idx=Math.abs(Math.floor(mv*3.7+mc*1.3))%14;
-    const love=[
-        {t:'💕 <b>桃花爆炸月</b>\n\n本月你的桃花运直接拉满，身边会出现让你心跳加速的人。那种「怎么这么巧」的相遇概率飙升——可能是一次偶然的碰面、一个共同朋友的局、甚至你随手发的一条朋友圈就会引发蝴蝶效应。\n\n<b>建议：</b>大胆打破你的日常路线，去平时不去的地方。缘分就藏在「不一样」里。\n\n<b>适合做的事：</b>答应那些你平时会拒绝的邀约，多出现在人多的场合，你的桃花运藏在人群里。',
-        d:'💔 <b>桃花低迷期</b>\n\n本月容易遇到「看起来很对但就是哪里不对」的人。你可能会短暂心动，但冷静下来会发现——嗯，还是算了。这不是你的问题，是时机还没到。\n\n<b>建议：</b>别因为寂寞就降低标准，宁愿高质量的单身，也不要将就的恋爱。你的正缘正在赶来，别给错的人留位置。\n\n<b>本月关键词：</b>沉住气、别急、提升自己',
-        up:['💕','感情运势'],
-        down:['💔','感情运势']},
-        {t:'💋 <b>异性缘拉满</b>\n\n本月你的魅力值自带Buff加持。前任可能会「不经意」出现、一直暗恋你的人可能终于要开口了、甚至会有一个完全意想不到的新桃花入局。\n\n这不是演习，三选一的剧本已经写好了——无论选哪个都精彩。\n\n<b>建议：</b>保持开放的心态，但别同时撩三个，你的好运撑不住的。\n\n<b>特别提醒：</b>如果有个人最近频繁找你聊天但总找些奇怪的借口——别怀疑，那就是在撩你。',
-        d:'🥶 <b>魅力值暂时下线</b>\n\n本月你在社交场上容易冷场，说笑话没人笑、发朋友圈没人赞、约人约不到。别怀疑自己的魅力，这只是运势的低谷期。\n\n<b>建议：</b>安静的时光正好用来提升自己。读读书、健健身、学个新技能。下个月的你会让所有人惊艳——那种「诶你最近变了」的惊艳。\n\n<b>注意：</b>不要在这个月表白，容易被拒。',
-        up:['💋','感情运势'],
-        down:['🥶','感情运势']},
-        {t:'💍 <b>浪漫惊喜月</b>\n\n如果你恋爱中：对方会给你一个让你意想不到的浪漫惊喜。可能不是什么大事，但一定精准命中你的喜好——说明这个人一直在偷偷观察你。\n\n如果你单身：有个人正在偷偷关注你。就是那个你从没注意过、但每次聚会都在的人。ta可能不会主动开口，但ta的朋友已经开始暗示你了。\n\n<b>建议：</b>恋爱中的多给正面反馈，单身的开始留意那些「总在」身边的人。',
-        d:'🌬 <b>感情考验期</b>\n\n恋爱中的注意了：本月小事容易升级成大事。一句无心的话、一个迟到的回复、一次忘记的重要日子——都可能引发不必要的冷战。\n\n<b>建议：</b>多夸少怼。这个月你的「夸夸技能」比什么礼物都管用。每天至少真诚地夸对方一次，能化解80%的危机。\n\n<b>单身的：</b>本月不适合开始新感情，但适合梳理上一段感情的心结。',
-        up:['💍','感情运势'],
-        down:['🌬','感情运势']},
-        {t:'🌸 <b>桃花从天降</b>\n\n本月的桃花会从最意想不到的地方来——可能是工作群里的某个人突然找你私聊、同学聚会上多年没见的老同学变了一个人、甚至外卖小哥多聊的那两句——都是信号。\n\n<b>特别提醒：</b>保持手机畅通，朋友圈别设三天可见。缘分不等人，你的正缘可能正在通过你的朋友圈了解你。\n\n<b>幸运时间：</b>周三和周六晚上社交运最强。',
-        d:'🌧 <b>社交能量偏弱</b>\n\n本月不适合主动出击，容易遇到「热脸贴冷屁股」的尴尬局面。你的社交直觉也不太准，容易把礼貌当暧昧、把暧昧当空气。\n\n<b>建议：</b>降低期待值，把注意力放在搞钱上。事业运和桃花运是跷跷板，这个月搞钱为主，感情的事下个月再说。\n\n<b>适合做的事：</b>复盘、计划、提升、搞钱。',
-        up:['🌸','感情运势'],
-        down:['🌧','感情运势']},
-        {t:'💌 <b>有人在偷偷喜欢你</b>\n\n这个月有一个人对你心动了，但ta是个闷骚型选手——不会直说，只会用各种「不明显但仔细想想好像有点明显」的方式暗示你。\n\n<b>如何识别：</b>\n① 明明没话找话还坚持找你聊天\n② 你的每条朋友圈ta都点赞甚至秒赞\n③ 在人群中会不自觉地看向你的方向\n④ 总是能「巧合」地出现在你附近\n\n<b>建议：</b>如果你对ta也有好感，本月适合释放信号——不用表白，多聊两句就够了。',
-        d:'📵 <b>信号紊乱月</b>\n\n本月你特别容易误读对方的信号：\n\n你以为人家在撩你 → 其实人家只是礼貌\n你以为人家不在意你 → 其实人家每天看你朋友圈三次\n你以为只是普通朋友 → 其实人家已经把你当备胎了\n\n<b>建议：</b>不确定的时候别脑补，直接问或者再观察观察。这个月你的感情雷达不太准，别靠直觉做决定。\n\n<b>原则：</b>没明确说喜欢你的，一律当朋友处理。',
-        up:['💌','感情运势'],
-        down:['📵','感情运势']},
-        {t:'🌟 <b>感情关键时刻</b>\n\n本月你的感情状态会迎来一个重要节点——要么表白、要么被表白、要么正式决定一段关系的走向。无论哪个结局，都是在推动你走向对的人。\n\n<b>如果你有暗恋对象：</b>本月是最好的开口时机。宇宙在帮你制造机会，勇敢一点。\n\n<b>如果你在犹豫要不要分手：</b>本月你会得到答案。不是别人给你的，是你自己终于想明白了。\n\n<b>本月感情座右铭：</b>该来的挡不住，该走的留不住。',
-        d:'🔄 <b>感情反思期</b>\n\n本月你会突然想清楚一些之前一直纠结的事情——为什么会分手、为什么总是遇到同一类人、为什么总是在同一个问题上跌倒。\n\n这个顿悟的过程可能有点扎心，但想通了就海阔天空。\n\n<b>建议：</b>允许自己难过一下，但别沉溺太久。写下来、说出来、和朋友聊聊，比你一个人闷着强。\n\n<b>本月适合：</b>独处、反思、和老朋友叙旧。',
-        up:['🌟','感情运势'],
-        down:['🔄','感情运势']},
-        {t:'🎵 <b>同频共振月</b>\n\n本月你的感情频率特别容易和别人对上——那种「聊了一整夜还觉得没聊够」的体验很有可能会发生。\n\n如果出现了这样一个人，别犹豫，这不是普通的好感，这是灵魂层面的一拍即合。深入了解一下，你可能发现你们连听歌口味都一样。\n\n<b>幸运场景：</b>书店、咖啡馆、深夜的聊天、分享歌单。\n\n<b>建议：</b>多表达自己真实的想法，别伪装。这个月真实的你最吸引人。',
-        d:'🧊 <b>高冷气场月</b>\n\n本月你自带冰冻气场，别人靠近你会觉得你不好接近。其实你只是在思考人生、发呆、或者单纯不想说话——但外表看起来就是「这个人好难搞」。\n\n桃花不是被你拒绝了，是被你的气场吓跑了。\n\n<b>建议：</b>适当释放温暖——见面多笑一笑、回复消息快一点、朋友圈偶尔发个可爱的表情包。不用很刻意，一点点温度就够了。\n\n<b>记住：</b>你的冰山下面其实是火山，别让人只看到冰山。',
-        up:['🎵','感情运势'],
-        down:['🧊','感情运势']},
+    const seed=Math.abs(Math.floor(mv*3.7+mc*1.3))%100;
+    const money_up=[
+        '💰 本月搞钱运拉满，上个月花的钱这个月会以意想不到的方式回来，甚至更多。适合谈加薪、接私活、搞副业——你的努力终于被财神爷看到了。',
+        '💰 偏财运上线！有人会莫名其妙给你发红包、请你吃饭、送你东西。别推，这是你的福报，大方收下，反正下个月你也会回馈给别人的。',
+        '💰 本月你的搞钱DNA动了，会有一个赚钱灵感突然闪现。别犹豫，先干了再说——有些机会就是「先上车再补票」才有的。',
+        '💰 财神爷本月站你这边。之前垫的钱、借出去的钱、被欠的钱都有希望回来。重点关注：中旬左右会有一笔意外收入。',
+        '💰 本月正财运爆棚，你的付出会被量化成真金白银——加班有加班费、提案有奖金、连随手帮的忙都能变现成红包。',
     ];
-    const money=[
-        {t:'💰 <b>财运爆棚</b>\n\n上个月亏的、花的、白送的，这个月都有机会连本带利回来。留意身边突然冒出来的赚钱线索——可能是朋友的一句「我有个项目你要不要参与」，或者是你无意中发现的一个商机。\n\n<b>建议：</b>不要因为「听起来不太靠谱」就错过。当然也别全信，用脑子判断。\n\n<b>幸运数字：</b>包含你的出生月份的日子。',
-        d:'💸 <b>钱包保卫战</b>\n\n本月花钱的地方特别多，而且都是「必须花的」——房租、人情、车贷、突然冒出来的账单。控制冲动消费，远离直播间和促销活动。\n\n<b>建议：</b>每一笔支出都记下来，月底你会庆幸自己这么做了。本月最危险的消费陷阱：深夜刷手机下单。',
-        up:['💰','财运'],
-        down:['💸','财运']},
-        {t:'🧧 <b>偏财运来了</b>\n\n意料之外的收入渠道会打开——可能是兼职、奖金、二手回血、甚至你随手帮了个忙后收到的感谢红包。金额不大但频率高，积少成多这个月会有一笔不小的额外收入。\n\n<b>建议：</b>别嫌少就忽略，这个月的意外之财要接住。',
-        d:'📉 <b>投资运低迷</b>\n\n本月不适合做任何财务决策，别炒股、别买基金、别冲动创业。这个月适合记账而不是花钱，适合攒钱而不是投资。\n\n<b>建议：</b>把闲钱放余额宝，眼不见心不烦。',
-        up:['🧧','财运'],
-        down:['📉','财运']},
-        {t:'💎 <b>事业财运双开</b>\n\n付出会被看到，你的努力值终于迎来了市场认可。该谈薪资的谈薪资，该提方案的提方案，时机刚刚好。\n\n<b>建议：</b>主动争取，别等别人发现你的价值——因为你值得。',
-        d:'⏳ <b>财运蓄力期</b>\n\n暂时看不到回报，但你在做的积累都没白费。沉住气，下个月账面上就会有变化。本月适合做财务规划。',
-        up:['💎','财运'],
-        down:['⏳','财运']},
-        {t:'🤑 <b>被偏爱的那个</b>\n\n本月会有人请你吃饭、送你礼物、给你介绍资源。大方接受就好，不必急着还人情——该是你的福分不要推。\n\n<b>幸运来源：</b>长辈、贵人、某个你曾经帮过的人。',
-        d:'❄ <b>防占便宜</b>\n\n本月容易被人占便宜——借钱不还、功劳被抢、该你拿的钱被人拿了。长个心眼，先小人后君子不丢人。\n\n<b>建议：</b>重要的事留个记录，口头承诺不如文字确认。',
-        up:['🤑','财运'],
-        down:['❄','财运']},
+    const money_dn=[
+        '💸 本月钱包有点emo，花钱的地方全是「必须花的」，赚钱的地方全是「下个月的」。别慌，这是蓄力期，先把基本功练好。',
+        '💸 本月消费欲望很强但赚钱运势一般，容易「冲动下单、冷静后悔」。建议：卸载购物APP、远离直播间、睡前不要刷手机。',
+        '💸 本月钱包在渡劫。每当你觉得「终于可以存钱了」的时候，就会冒出一笔新的支出。别焦虑，控制住大手大脚的冲动就是赢了。',
+        '💸 本月财神爷跟你请假了，不适合做任何财务决策。别买基金、别炒股、别听朋友说「这个稳赚」——信我，这个月什么都不做就是最好的投资。',
+        '💸 本月搞钱运一般，但「省钱运」可以拉满。每花一笔钱之前问自己：这个是不买会死还是不买会不舒服？选后者的都别买。',
     ];
-    const career=[
-        {t:'🚀 <b>事业起飞月</b>\n\n某个你一直想推进的事情会突然顺了——可能是新项目启动、转岗成功、或者创业灵感的突破口。\n\n<b>建议：</b>别犹豫，冲就完了。这个月的执行力是你今年最强的。',
-        d:'🏢 <b>职场平稳期</b>\n\n不适合跳槽或掀桌子，但适合做长线规划。现在不适合动，但适合想清楚往哪动。',
-        up:['🚀','事业'],
-        down:['🏢','事业']},
-        {t:'🏆 <b>贵人运极强</b>\n\n上级、前辈、甚至竞争对手会给你带来意外帮助。保持开放心态，有人夸你就接受，有人批评你就思考。\n\n<b>幸运贵人：</b>比你年长5-10岁的人。',
-        d:'⚠ <b>职场水逆</b>\n\n容易说错话、发错消息、开错会。重要沟通之前多看一遍。\n\n<b>建议：</b>能打字的别语音，能确认的别猜。',
-        up:['🏆','事业'],
-        down:['⚠','事业']},
+    const love_up=[
+        '💕 本月桃花直接爆表，有人正在偷偷关注你却不敢开口。留意那些「明明没啥事还找你聊天」的人——ta就是那个在憋大招的人。',
+        '💕 异性缘本月开挂，你的魅力值自带滤镜效果。前任可能回头、暗恋可能摊牌、甚至可能同时收到两个表白——选择困难症准备发作。',
+        '💕 本月你的感情运是「天选之子」级别，如果单身：转角遇到爱的概率飙升；如果恋爱中：对方会给你一个猝不及防的甜。',
+        '💕 桃花运来了！而且是那种从最意想不到的地方来的——可能是个老朋友突然变得不一样了，或者一个你以为毫无交集的人突然出现。',
+        '💕 本月你的感情信号满格，说什么都好听、做什么都好看、发什么朋友圈都有人秒赞。就是这种感觉：全世界都在给你让路。',
     ];
-    const pool=[...love,...love,...money,...career];
-    const item=pool[idx%pool.length];
-    return{aspect:item.up?item.up[1]:item.down[1], up:item.t, down:item.d};
+    const love_dn=[
+        '💔 本月桃花有点「已读不回」的意思，你热情满满别人冷冷清清。别上头，不是你的问题，是时机还没到。先搞钱，桃花自然来。',
+        '💔 本月感情运有点emo，容易遇到「聊得很开心但一见面就幻灭」的人。建议：多线上少线下，把期待值降到冰点就不会受伤。',
+        '💔 本月桃花在放假，不适合表白、不适合告白、不适合「我有个事想跟你说」。把感情的事先放一放，专注搞钱和搞自己。',
+        '💔 本月容易遇到「三分钟热度型桃花」——上头很快、下头更快。别因为一时的荷尔蒙就觉得自己恋爱了，再观察观察。',
+        '💔 本月你的感情雷达有点失灵，容易把礼貌当暧昧、把暧昧当空气。建议：一切以「明确说了喜欢你」为准，没说的一律当朋友。',
+    ];
+    const health_up=[
+        '💪 本月身体状态满血复活，精力值拉满、睡眠质量直线上升。适合开始新的运动计划——这次不是说说而已，真的能坚持。',
+        '💪 本月你的身体在偷偷升级，之前的小毛病会明显好转，精神状态也好很多。趁着这波buff，把拖延了很久的体检去做了吧。',
+        '💪 健康运本月表现优秀，你会突然发现自己的体力变好了、睡眠变香了、连皮肤都变好了。保持住，这是好习惯的复利。',
+    ];
+    const health_dn=[
+        '🤒 本月身体在提醒你：该休息了。容易疲惫、失眠、莫名头疼——这是身体在发弹窗通知。别点关闭，认真对待，早睡早起保命要紧。',
+        '🤒 本月健康运有点拉胯，小毛病容易找上门。别硬撑，该吃药吃药、该休息休息。记住：你不理身体，身体就会理你。',
+        '🤒 本月身体在充电状态，容易犯困、没精神、不想动。这不是懒，是你的身体在要求你慢下来。别和身体较劲，躺平几天没关系的。',
+    ];
+    const pick=(arr)=>arr[seed%arr.length];
+    const mUp=(mv+mc*0.3)>50;
+    const lUp=((mv*1.3+mc*0.7)%100)>45;
+    const hUp=((mv*0.8+mc*1.2)%100)>42;
+    return{
+        money:{up:mUp, txt:pick(mUp?money_up:money_dn)},
+        love:{up:lUp, txt:pick(lUp?love_up:love_dn)},
+        health:{up:hUp, txt:pick(hUp?health_up:health_dn)},
+    };
 }
 
 function drawK(d80,age){
@@ -295,12 +288,18 @@ function render(){
     const mV=d80.data[mIdx];
     const mChg=mV-ipo;
     const advice=monthAdvice(bd,mV,mChg);
-    document.getElementById('rSigLbl').textContent='📅 '+(curM+1)+'月 '+advice.aspect+'运势参考';
+    document.getElementById('rSigLbl').textContent='📅 本月运势速报';
     const trendEl=document.getElementById('rSigTrend');
-    if(mChg>1.5){trendEl.textContent='📈 预计涨';trendEl.className='sig-trend up'}
-    else if(mChg<-1.5){trendEl.textContent='📉 预计跌';trendEl.className='sig-trend dn'}
-    else{trendEl.textContent='➡ 预计平稳';trendEl.className='sig-trend flat'}
-    document.getElementById('rSigTip').innerHTML=mChg>=0?advice.up:advice.down;
+    const total=advice.money.up+advice.love.up+advice.health.up;
+    if(total>=3){trendEl.textContent='🚀 全面看涨';trendEl.className='sig-trend up'}
+    else if(total>=2){trendEl.textContent='📈 多数看涨';trendEl.className='sig-trend up'}
+    else if(total<=0){trendEl.textContent='📉 多数看跌';trendEl.className='sig-trend dn'}
+    else{trendEl.textContent='➡ 涨跌互现';trendEl.className='sig-trend flat'}
+    document.getElementById('rThreeLine').innerHTML=`<div class="sig-lines">
+        <div class="sig-row"><div class="sig-ico money">💰</div><div class="sig-txt">${advice.money.txt}</div><span class="sig-tag ${advice.money.up?'up':'dn'}">${advice.money.up?'看涨':'看跌'}</span></div>
+        <div class="sig-row"><div class="sig-ico love">💕</div><div class="sig-txt">${advice.love.txt}</div><span class="sig-tag ${advice.love.up?'up':'dn'}">${advice.love.up?'看涨':'看跌'}</span></div>
+        <div class="sig-row"><div class="sig-ico health">💪</div><div class="sig-txt">${advice.health.txt}</div><span class="sig-tag ${advice.health.up?'up':'dn'}">${advice.health.up?'看涨':'看跌'}</span></div>
+    </div>`;
 }
 
 function back(){document.getElementById('r').classList.remove('show');document.getElementById('home').style.display='';document.title='人生股票 · 看看你的命运值多少钱'}
